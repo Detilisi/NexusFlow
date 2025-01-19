@@ -1,0 +1,71 @@
+/* Global Customizations */
+
+/* Body and general typography */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa; /* Light background for a clean look */
+    color: #333; /* Dark text for readability */
+}
+
+/* Button Customizations */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+.btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+/* Navbar Customizations */
+.navbar-dark .navbar-nav .nav-link {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+.navbar-dark .navbar-brand {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+/* Card Customizations */
+.card {
+    border-radius: 10px; /* Rounded corners for cards */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card-header {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Spacing and Margins */
+.mt-5 {
+    margin-top: 3rem !important;
+}
+
+.mb-5 {
+    margin-bottom: 3rem !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+}

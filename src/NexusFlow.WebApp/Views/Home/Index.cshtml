@@ -2,7 +2,16 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container vh-100 d-flex flex-column justify-content-center align-items-center text-center">
+    <div class="card shadow-lg p-5 border-0" style="max-width: 600px; border-radius: 15px; background: #f8f9fa;">
+        <div class="card-body">
+            <h1 class="display-4 fw-bold text-primary mb-3">Welcome to Nexus Flow</h1>
+            <p class="lead text-muted mb-4">
+                Nexus Flow is a modern platform designed to simplify the management of people, accounts, and transactions.
+                Explore a seamless experience in handling all your account and transaction needs.
+            </p>
+            <a href="@Url.Action("About", "Home")" class="btn btn-primary btn-lg px-4">Learn More</a>
+            <a href="@Url.Action("Login", "Account")" class="btn btn-outline-primary btn-lg px-4 ms-3">Get Started</a>
+        </div>
+    </div>
 </div>
