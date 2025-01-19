@@ -9,9 +9,11 @@ namespace NexusFlow.WebApp.Controllers
             return View();
         }
 
-        public IActionResult Login()
+        [HttpPost]
+        public ActionResult SubmitLogin(string username, string password)
         {
-            return View();
+            TempData["SuccessMessage"] = "Thank you for your message! We'll get back to you shortly.";
+            return RedirectToAction("Contact");
         }
     }
 }
