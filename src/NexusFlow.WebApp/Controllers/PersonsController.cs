@@ -3,7 +3,7 @@ using NexusFlow.WebApp.Models;
 
 namespace NexusFlow.WebApp.Controllers;
 
-[Route("Home/[controller]")]
+[Route("Login/[controller]")]
 public class PersonsController : Controller
 {
     private static List<PersonViewModel> _persons = new()
@@ -12,8 +12,20 @@ public class PersonsController : Controller
         new PersonViewModel { Id = 2, IdNumber = "987654321", FirstName = "Jane", LastName = "Smith", AccountNumber = "AC54321" }
     };
 
+    [HttpGet]
     public IActionResult Index()
     {
         return View(_persons);
+    }
+
+    //CRUD
+    [HttpGet("Delete")]
+    public IActionResult Delete(int id)
+    {
+        var person = _persons.FirstOrDefault(p => p.Id == id);
+        if (person == null) return NotFound();
+        _persons.Remove(person);
+
+        return RedirectToAction("Index");
     }
 }
