@@ -10,14 +10,14 @@
     <!-- Basic Details -->
     <div class="card">
         <div class="card-header row g-3">
-            <h4>@Model.FirstName @Model.LastName</h4>
+            <h4>@Model.Name @Model.Surname</h4>
         </div>
         <div class="card-body">
             <table class="table table-bordered">
                 <tbody>
                     <tr>
-                        <th>ID</th>
-                        <td>@Model.Id</td>
+                        <th>Code</th>
+                        <td>@Model.Code</td>
                     </tr>
                     <tr>
                         <th>ID Number</th>
@@ -25,15 +25,11 @@
                     </tr>
                     <tr>
                         <th>First Name</th>
-                        <td>@Model.FirstName</td>
+                        <td>@Model.Name</td>
                     </tr>
                     <tr>
                         <th>Last Name</th>
-                        <td>@Model.LastName</td>
-                    </tr>
-                    <tr>
-                        <th>Account Number</th>
-                        <td>@Model.AccountNumber</td>
+                        <td>@Model.Surname</td>
                     </tr>
                 </tbody>
             </table>

@@ -43,11 +43,10 @@
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Code</th>
                         <th>Name</th>
                         <th>Surname</th>
                         <th>ID Number</th>
-                        <th>Account Number</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -57,15 +56,14 @@
                         foreach (var person in Model)
                         {
                             <tr>
-                                <td>@person.Id</td>
-                                <td>@person.FirstName</td>
-                                <td>@person.LastName</td>
+                                <td>@person.Code</td>
+                                <td>@person.Name</td>
+                                <td>@person.Surname</td>
                                 <td>@person.IdNumber</td>
-                                <td>@person.AccountNumber</td>
                                 <td>
-                                    <a asp-action="Save" asp-route-id="@person.Id" class="btn btn-sm btn-warning">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@person.Id" class="btn btn-sm btn-danger">Delete</a>
-                                    <a asp-action="Detials" asp-route-id="@person.Id" class="btn btn-sm btn-primary">View</a>
+                                    <a asp-action="Save" asp-route-id="@person.Code" class="btn btn-sm btn-warning">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@person.Code" class="btn btn-sm btn-danger">Delete</a>
+                                    <a asp-action="Detials" asp-route-id="@person.Code" class="btn btn-sm btn-primary">View</a>
                                 </td>
                             </tr>
                         }

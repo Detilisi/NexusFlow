@@ -8,8 +8,8 @@ public class PersonsController : Controller
 {
     private static List<PersonViewModel> _persons = new()
     {
-        new PersonViewModel { Id = 1, IdNumber = "123456789", FirstName = "John", LastName = "Doe", AccountNumber = "AC12345" },
-        new PersonViewModel { Id = 2, IdNumber = "987654321", FirstName = "Jane", LastName = "Smith", AccountNumber = "AC54321" }
+        new PersonViewModel { Code = 1, IdNumber = "123456789", Name = "John", Surname = "Doe" },
+        new PersonViewModel { Code = 2, IdNumber = "987654321", Name = "Jane", Surname = "Smith" }
     };
 
     [HttpGet]
@@ -22,7 +22,7 @@ public class PersonsController : Controller
     [HttpGet("Delete")]
     public IActionResult Delete(int id)
     {
-        var person = _persons.FirstOrDefault(p => p.Id == id);
+        var person = _persons.FirstOrDefault(p => p.Code == id);
         if (person == null) return NotFound();
         _persons.Remove(person);
 
@@ -32,7 +32,7 @@ public class PersonsController : Controller
     [HttpGet("Detials")]
     public IActionResult Detials(int id)
     {
-        var person = _persons.FirstOrDefault(p => p.Id == id);
+        var person = _persons.FirstOrDefault(p => p.Code == id);
         return View(person);
     }
 
@@ -41,7 +41,7 @@ public class PersonsController : Controller
     {
         if (id != null)
         {
-            var person = _persons.FirstOrDefault(p => p.Id == id);
+            var person = _persons.FirstOrDefault(p => p.Code == id);
             return View(person);
         }
         return View();
@@ -51,7 +51,7 @@ public class PersonsController : Controller
     [HttpPost("Save")]
     public IActionResult Save(PersonViewModel model)
     {
-        if(model.Id == 0)
+        if(model.Code == 0)
         {
             //Add
             _persons.Add(model);
@@ -59,11 +59,10 @@ public class PersonsController : Controller
         else
         {
             //Update
-            var person = _persons.FirstOrDefault(p => p.Id == model.Id);
+            var person = _persons.FirstOrDefault(p => p.Code == model.Code);
             person.IdNumber = model.IdNumber;
-            person.FirstName = model.FirstName;
-            person.LastName = model.LastName;
-            person.AccountNumber = model.AccountNumber;
+            person.Name = model.Name;
+            person.Surname = model.Surname;
         }
 
         return RedirectToAction("Index");
