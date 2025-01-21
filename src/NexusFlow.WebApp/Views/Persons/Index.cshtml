@@ -9,34 +9,34 @@
     <h1 class="text-primary mb-4">Persons List</h1>
 
     <!-- Search Section -->
-    <div class="card shadow-sm mb-4">
+    <div class="mb-4">
         <div class="card-body">
-            <form method="get" action="@Url.Action("Search", "Persons")">
-                <div class="mb-2 text-end">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </div>
-                <div class="row g-3">
+            <form method="get" class="mb-3">
+                <div class="row">
                     <div class="col-md-4">
-                        <label for="idNumber" class="form-label">ID Number</label>
-                        <input type="text" class="form-control" id="idNumber" name="idNumber" placeholder="Enter ID Number" />
+                        <input type="text" name="searchTerm" class="form-control" placeholder="Search..." value="@ViewData["searchTerm"]" />
                     </div>
                     <div class="col-md-4">
-                        <label for="surname" class="form-label">Surname</label>
-                        <input type="text" class="form-control" id="surname" name="surname" placeholder="Enter Surname" />
+                        <select name="searchType" class="form-control">
+                            <option value="ID Number" selected>By ID Number</option>
+                            <option value="Surname">By Surname</option>
+                            <option value="Account Number">By Account Number</option>
+                        </select>
                     </div>
-                    <div class="col-md-4">
-                        <label for="accountNumber" class="form-label">Account Number</label>
-                        <input type="text" class="form-control" id="accountNumber" name="accountNumber" placeholder="Enter Account Number" />
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary">Search</button>
                     </div>
                 </div>
             </form>
         </div>
+
+        
     </div>
 
     <div class="card shadow-sm">
         <div class="card-body">
             <!-- Add New Person Button -->
-            <div class="text-end mb-3">
+            <div class="mb-3">
                 <a asp-action="Save" class="btn btn-success">Add New Person</a>
             </div>
             <!-- Persons Table -->
