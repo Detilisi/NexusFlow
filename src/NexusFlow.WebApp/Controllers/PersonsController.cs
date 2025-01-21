@@ -28,4 +28,26 @@ public class PersonsController : Controller
 
         return RedirectToAction("Index");
     }
+
+    [HttpGet("Save")]
+    public IActionResult Save(int? id)
+    {
+        if (id != null)
+        {
+            var person = _persons.FirstOrDefault(p => p.Id == id);
+            return View(person);
+        }
+        return View(new PersonViewModel());
+    }
+
+    [HttpGet("View")]
+    public IActionResult View(int id)
+    {
+        var person = _persons.FirstOrDefault(p => p.Id == id);
+        if (person != null)
+        {
+            _persons.Remove(person);
+        }
+        return RedirectToAction("Index");
+    }
 }

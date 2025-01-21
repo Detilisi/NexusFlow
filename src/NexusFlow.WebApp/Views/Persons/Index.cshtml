@@ -11,11 +11,10 @@
     <!-- Search Section -->
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <div class="mb-2 text-end">
-                <button type="submit" class="btn btn-primary">Search</button>
-            </div>
-
             <form method="get" action="@Url.Action("Search", "Persons")">
+                <div class="mb-2 text-end">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label for="idNumber" class="form-label">ID Number</label>
@@ -38,7 +37,7 @@
         <div class="card-body">
             <!-- Add New Person Button -->
             <div class="text-end mb-3">
-                <a href="@Url.Action("Create", "Persons")" class="btn btn-success">Add New Person</a>
+                <a asp-action="Save" class="btn btn-success">Add New Person</a>
             </div>
             <!-- Persons Table -->
             <table class="table table-bordered table-striped table-hover">
@@ -64,7 +63,7 @@
                                 <td>@person.IdNumber</td>
                                 <td>@person.AccountNumber</td>
                                 <td>
-                                    <a asp-action="Edit" asp-route-id="@person.Id" class="btn btn-sm btn-warning">Edit</a>
+                                    <a asp-action="Save" asp-route-id="@person.Id" class="btn btn-sm btn-warning">Edit</a>
                                     <a asp-action="Delete" asp-route-id="@person.Id" class="btn btn-sm btn-danger">Delete</a>
                                     <a asp-action="View" asp-route-id="@person.Id" class="btn btn-sm btn-primary">View</a>
                                 </td>
