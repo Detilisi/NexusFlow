@@ -29,6 +29,13 @@ public class PersonsController : Controller
         return RedirectToAction("Index");
     }
 
+    [HttpGet("Detials")]
+    public IActionResult Detials(int id)
+    {
+        var person = _persons.FirstOrDefault(p => p.Id == id);
+        return View(person);
+    }
+
     [HttpGet("Save")]
     public IActionResult Save(int? id)
     {
@@ -37,17 +44,28 @@ public class PersonsController : Controller
             var person = _persons.FirstOrDefault(p => p.Id == id);
             return View(person);
         }
-        return View(new PersonViewModel());
+        return View();
     }
 
-    [HttpGet("View")]
-    public IActionResult View(int id)
+    // Handle Save Submission
+    [HttpPost("Save")]
+    public IActionResult Save(PersonViewModel model)
     {
-        var person = _persons.FirstOrDefault(p => p.Id == id);
-        if (person != null)
+        if(model.Id == 0)
         {
-            _persons.Remove(person);
+            //Add
+            _persons.Add(model);
         }
+        else
+        {
+            //Update
+            var person = _persons.FirstOrDefault(p => p.Id == model.Id);
+            person.IdNumber = model.IdNumber;
+            person.FirstName = model.FirstName;
+            person.LastName = model.LastName;
+            person.AccountNumber = model.AccountNumber;
+        }
+
         return RedirectToAction("Index");
     }
 }

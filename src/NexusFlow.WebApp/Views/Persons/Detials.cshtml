@@ -1,0 +1,43 @@
+﻿@model PersonViewModel
+@{
+    ViewData["Title"] = "Person Details";
+}
+
+<div class="container py-5">
+    <h1 class="text-primary mb-4">Person Detials</h1>
+    <a asp-action="Index" class="btn btn-secondary mb-4">Back to List</a>
+    
+    <!-- Basic Details -->
+    <div class="card">
+        <div class="card-header row g-3">
+            <h4>@Model.FirstName @Model.LastName</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>ID</th>
+                        <td>@Model.Id</td>
+                    </tr>
+                    <tr>
+                        <th>ID Number</th>
+                        <td>@Model.IdNumber</td>
+                    </tr>
+                    <tr>
+                        <th>First Name</th>
+                        <td>@Model.FirstName</td>
+                    </tr>
+                    <tr>
+                        <th>Last Name</th>
+                        <td>@Model.LastName</td>
+                    </tr>
+                    <tr>
+                        <th>Account Number</th>
+                        <td>@Model.AccountNumber</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
