@@ -13,9 +13,26 @@ public class PersonsController : Controller
     };
 
     [HttpGet]
-    public IActionResult Index()
+    public IActionResult Index(string searchTerm, string searchType)
     {
-        return View(_persons);
+        var persons = _persons.AsQueryable();
+        if (!string.IsNullOrEmpty(searchTerm) && !string.IsNullOrEmpty(searchType))
+        {
+            switch (searchType)
+            {
+                case "ID Number":
+                    persons = persons.Where(p => p.IdNumber.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+                    break;
+                case "Surname":
+                    persons = persons.Where(p => p.Surname.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+                    break;
+                case "Account Number":
+                    persons = persons.Where(p => p.Accounts.FirstOrDefault(a => a.AccountNumber.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) != null);
+                    break;
+            }
+        }
+
+        return View(persons.ToList());
     }
 
     //CRUD
