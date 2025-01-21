@@ -2,10 +2,10 @@
 {
     public class PersonViewModel
     {
-        public required int Id { get; set; }
-        public required string IdNumber { get; set; }
-        public required string FirstName { get; set; }
-        public required string LastName { get; set; }
-        public required string AccountNumber { get; set; }
+        public int Code { get; set; } = 0;
+        public string IdNumber { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;   
+        public string Surname { get; set; } = string.Empty;
+        public List<AccountViewModel> Accounts { get; set; } = [];
     }
 }
