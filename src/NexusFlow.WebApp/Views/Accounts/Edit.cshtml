@@ -71,7 +71,7 @@
             </div>
             <div class="card-body">
                 <div class="text-end mb-3">
-                    <a asp-action="Edit" asp-controller="Accounts" asp-route-personCode="@Model.Code" class="btn btn-success">Add New Transaction</a>
+                    <a asp-action="Edit" asp-controller="Transactions" asp-route-personCode="@Model.Code" class="btn btn-success">Add New Transaction</a>
                 </div>
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
@@ -97,7 +97,7 @@
                                     <td>@transaction.CaptureDate</td>
                                     <td>@transaction.TransactionDate</td>
                                     <td>
-                                        <a asp-action="Edit" asp-controller="Accounts" asp-route-id="@transaction.Code" class="btn btn-sm btn-primary">View</a>
+                                        <a asp-action="Edit" asp-controller="Transactions" asp-route-id="@transaction.Code" class="btn btn-sm btn-primary">View</a>
                                     </td>
                                 </tr>
                             }
