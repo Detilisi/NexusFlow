@@ -10,7 +10,8 @@ namespace NexusFlow.WebApp.Controllers
 
         public AccountsController()
         {
-            _currentAccount = new() { PersonCode = 1, AccountNumber = "Acc45454" };
+            _currentAccount = new() { PersonCode = 1, AccountNumber = "Acc45454", 
+                Transactions = [new() { AccountCode=1, Amount=12, Description = "Hello world"} ] };
         }
 
 
