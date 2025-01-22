@@ -14,12 +14,6 @@ namespace NexusFlow.WebApp.Controllers
         }
 
 
-        [HttpGet("Delete")]
-        public IActionResult Delete(int id)
-        {
-            return RedirectToAction("Details", "Persons", new { id = _currentAccount.PersonCode });
-        }
-
         [HttpGet("Details")]
         public IActionResult Details(int? id)
         {

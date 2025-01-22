@@ -4,13 +4,12 @@
 }
 
 <div class="container py-5">
-    <h1 class="text-primary mb-4">Person Detials</h1>
     <a asp-action="Index" class="btn btn-secondary mb-4">Back to List</a>
     
     <!-- Basic Details -->
     <div class="card">
         <div class="card-header">
-            <h4>@Model.Name @Model.Surname</h4>
+            <h4 class="text-primary">Person Detials</h4>
         </div>
         <div class="card-body">
             <table class="table table-bordered">
@@ -37,46 +36,47 @@
     </div>
 
     <!-- Accounts -->
-    <div class="card-body mt-3">
-        <!-- Add New Account Button -->
-        <div class="text-end mb-3">
-            <a asp-action="Save" asp-controller="Accounts" asp-route-personCode="@Model.Code" class="btn btn-success">Add New Account</a>
+    <div class="card mt-5">
+        <div class="card-header">
+            <h4 class="text-primary">Account list</h4>
         </div>
-        
-        <table class="table table-bordered table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>Code</th>
-                    <th>Account number</th>
-                    <th>Outstanding Balance</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model != null && Model.Accounts.Any())
-                {
-                    foreach (var account in Model.Accounts)
+        <div class="card-body">
+            <div class="text-end mb-3">
+                <a asp-action="Details" asp-controller="Accounts" asp-route-personCode="@Model.Code" class="btn btn-success">Add New Account</a>
+            </div>
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Account number</th>
+                        <th>Outstanding Balance</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Accounts.Any())
+                    {
+                        foreach (var account in Model.Accounts)
+                        {
+                            <tr>
+                                <td>@account.Code</td>
+                                <td>@account.AccountNumber</td>
+                                <td>@account.OutStandingBalance</td>
+                                <td>
+                                    <a asp-action="Details" asp-controller="Accounts" asp-route-id="@account.Code" class="btn btn-sm btn-primary">View</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            <td>@account.Code</td>
-                            <td>@account.AccountNumber</td>
-                            <td>@account.OutStandingBalance</td>
-                            <td>
-                                <a asp-action="Save" asp-controller="Accounts" asp-route-id="@account.Code" asp-route-personCode="@Model.Code" class="btn btn-sm btn-warning">Edit</a>
-                                <a asp-action="Delete" asp-controller="Accounts" asp-route-id="@account.Code" class="btn btn-sm btn-danger">Delete</a>
-                                <a asp-action="Details" asp-controller="Accounts" asp-route-id="@account.Code" class="btn btn-sm btn-primary">View</a>
-                            </td>
+                            <td colspan="6" class="text-center text-muted">No accounts found.</td>
                         </tr>
                     }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="6" class="text-center text-muted">No accounts found.</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
