@@ -5,78 +5,101 @@
 
 <div class="container py-5">
     <a asp-action="Index" class="btn btn-secondary mb-4">Back to List</a>
-    
+
     <!-- Basic Details -->
     <div class="card">
         <div class="card-header">
             <h4 class="text-primary">Person Detials</h4>
         </div>
         <div class="card-body">
-            <table class="table table-bordered">
-                <tbody>
-                    <tr>
-                        <th>Code</th>
-                        <td>@Model.Code</td>
-                    </tr>
-                    <tr>
-                        <th>ID Number</th>
-                        <td>@Model.IdNumber</td>
-                    </tr>
-                    <tr>
-                        <th>First Name</th>
-                        <td>@Model.Name</td>
-                    </tr>
-                    <tr>
-                        <th>Last Name</th>
-                        <td>@Model.Surname</td>
-                    </tr>
-                </tbody>
-            </table>
+            <form asp-action="SubmitSave">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>Code</th>
+                            <td>@Model.Code</td>
+                        </tr>
+                        <tr>
+                            <th>Id number</th>
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="IdNumber" class="form-control" />
+                                    <span asp-validation-for="IdNumber" class="text-danger"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="Name" class="form-control" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Surname</th>
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="Surname" class="form-control" />
+                                    <span asp-validation-for="Surname" class="text-danger"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="mt-2 text-end">
+                    <button type="submit" class="btn btn-success"> Save Updates </button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Accounts -->
-    <div class="card mt-5">
-        <div class="card-header">
-            <h4 class="text-primary">Account list</h4>
-        </div>
-        <div class="card-body">
-            <div class="text-end mb-3">
-                <a asp-action="Details" asp-controller="Accounts" asp-route-personCode="@Model.Code" class="btn btn-success">Add New Account</a>
+    @if (Model.Code != 0)
+    {
+        <!-- Accounts -->
+        <div class="card mt-5">
+            <div class="card-header">
+                <h4 class="text-primary">Account list</h4>
             </div>
-            <table class="table table-bordered table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Account number</th>
-                        <th>Outstanding Balance</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Accounts.Any())
-                    {
-                        foreach (var account in Model.Accounts)
+            <div class="card-body">
+                <div class="text-end mb-3">
+                    <a asp-action="Details" asp-controller="Accounts" asp-route-personCode="@Model.Code" class="btn btn-success">Add New Account</a>
+                </div>
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Account number</th>
+                            <th>Outstanding Balance</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Accounts.Any())
+                        {
+                            foreach (var account in Model.Accounts)
+                            {
+                                <tr>
+                                    <td>@account.Code</td>
+                                    <td>@account.AccountNumber</td>
+                                    <td>@account.OutStandingBalance</td>
+                                    <td>
+                                        <a asp-action="Details" asp-controller="Accounts" asp-route-id="@account.Code" class="btn btn-sm btn-primary">Edit/View</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td>@account.Code</td>
-                                <td>@account.AccountNumber</td>
-                                <td>@account.OutStandingBalance</td>
-                                <td>
-                                    <a asp-action="Details" asp-controller="Accounts" asp-route-id="@account.Code" class="btn btn-sm btn-primary">View</a>
-                                </td>
+                                <td colspan="6" class="text-center text-muted">No accounts found.</td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">No accounts found.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    }
 </div>
 

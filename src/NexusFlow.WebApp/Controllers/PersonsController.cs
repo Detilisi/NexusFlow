@@ -9,7 +9,7 @@ public class PersonsController : Controller
     private static List<PersonViewModel> _persons = new()
     {
         new PersonViewModel { Code = 1, IdNumber = "123456789", Name = "John", Surname = "Doe" },
-        new PersonViewModel { Code = 2, IdNumber = "987654321", Name = "Jane", Surname = "Smith", Accounts = [new() { AccountNumber = "asdasd" }] }
+        new PersonViewModel { Code = 2, IdNumber = "987654321", Name = "Jane", Surname = "Smith", Accounts = [new() { Code = 1, AccountNumber = "asdasd" }] }
     };
 
     [HttpGet]
@@ -47,8 +47,13 @@ public class PersonsController : Controller
     }
 
     [HttpGet("Details")]
-    public IActionResult Details(int? id = 1)
+    public IActionResult Details(int id = 0)
     {
+        if (id == 0)
+        {
+            return View(new PersonViewModel());
+        }
+
         var person = _persons.FirstOrDefault(p => p.Code == id);
         return View(person);
     }

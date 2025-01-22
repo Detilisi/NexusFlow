@@ -15,8 +15,13 @@ namespace NexusFlow.WebApp.Controllers
 
 
         [HttpGet("Details")]
-        public IActionResult Details(int? id)
+        public IActionResult Details(int id = 0)
         {
+            if (id != 0)
+            {
+                _currentAccount.Code = id;
+            }
+
             return View(_currentAccount);
         }
 
