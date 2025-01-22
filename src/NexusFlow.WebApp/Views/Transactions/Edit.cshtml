@@ -13,7 +13,7 @@
             <h4 class="text-primary">Transaction Details</h4>
         </div>
         <div class="card-body">
-            <form asp-action="SubmitTransaction">
+            <form asp-action="SubmitSave">
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
@@ -51,7 +51,6 @@
                             <td>
                                 <div class="form-group">
                                     <input asp-for="TransactionDate" class="form-control datetimepicker" />
-                                    <span asp-validation-for="TransactionDate" class="text-danger"></span>
                                 </div>
                             </td>
                         </tr>
