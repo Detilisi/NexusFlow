@@ -14,24 +14,10 @@ namespace NexusFlow.WebApp.Controllers
         }
 
 
-        [HttpGet("Details")]
-        public IActionResult Details(int id = 0)
+        [HttpGet("Edit")]
+        public IActionResult Edit(int id = 0, int personCode = 1)
         {
-            if (id != 0)
-            {
-                _currentAccount.Code = id;
-            }
-
-            return View(_currentAccount);
-        }
-
-        [HttpGet("Save")]
-        public IActionResult Save(int? id, int personCode)
-        {
-            if (id != null)
-            {
-            }
-
+            _currentAccount.Code = id;
             _currentAccount.PersonCode = personCode;
 
             return View(_currentAccount);
@@ -50,7 +36,7 @@ namespace NexusFlow.WebApp.Controllers
                 //Update
             }
 
-            return RedirectToAction("Details", "Persons", new{ id = _currentAccount.PersonCode });
+            return RedirectToAction("Edit", "Persons", new{ id = _currentAccount.PersonCode });
         }
     }
 }

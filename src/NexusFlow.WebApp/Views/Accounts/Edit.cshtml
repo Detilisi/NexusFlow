@@ -1,15 +1,15 @@
-﻿@model PersonViewModel
+﻿@model AccountViewModel
 @{
-    ViewData["Title"] = "Person Details";
+    ViewData["Title"] = "Account Details";
 }
 
 <div class="container py-5">
-    <a asp-action="Index" class="btn btn-secondary mb-4">Back to List</a>
+    <a asp-action="Edit" asp-controller="Persons" asp-route-id="@Model.PersonCode" class="btn btn-secondary mb-4">Back to List</a>
 
     <!-- Basic Details -->
     <div class="card">
         <div class="card-header">
-            <h4 class="text-primary">Person Detials</h4>
+            <h4 class="text-primary">Account Detials</h4>
         </div>
         <div class="card-body">
             <form asp-action="SubmitSave">
@@ -20,29 +20,24 @@
                             <td>@Model.Code</td>
                         </tr>
                         <tr>
-                            <th>Id number</th>
+                            <th>Person code</th>
+                            <td>@Model.PersonCode</td>
+                        </tr>
+                        <tr>
+                            <th>Account number</th>
                             <td>
                                 <div class="form-group">
-                                    <input asp-for="IdNumber" class="form-control" />
-                                    <span asp-validation-for="IdNumber" class="text-danger"></span>
+                                    <input asp-for="AccountNumber" class="form-control" />
+                                    <span asp-validation-for="AccountNumber" class="text-danger"></span>
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                            <th>Name</th>
+                            <th>Outstanding Balance</th>
                             <td>
                                 <div class="form-group">
-                                    <input asp-for="Name" class="form-control" />
-                                    <span asp-validation-for="Name" class="text-danger"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Surname</th>
-                            <td>
-                                <div class="form-group">
-                                    <input asp-for="Surname" class="form-control" />
-                                    <span asp-validation-for="Surname" class="text-danger"></span>
+                                    <input asp-for="OutStandingBalance" class="form-control" />
+                                    <span asp-validation-for="OutStandingBalance" class="text-danger"></span>
                                 </div>
                             </td>
                         </tr>
@@ -53,39 +48,44 @@
                 </div>
             </form>
         </div>
-    </div>
-
+    </div>  
+    
     @if (Model.Code != 0)
     {
-        <!-- Accounts -->
+        <!-- Transaction -->
         <div class="card mt-5">
             <div class="card-header">
-                <h4 class="text-primary">Account list</h4>
+                <h4 class="text-primary">Transaction list</h4>
             </div>
             <div class="card-body">
                 <div class="text-end mb-3">
-                    <a asp-action="Details" asp-controller="Accounts" asp-route-personCode="@Model.Code" class="btn btn-success">Add New Account</a>
+                    <a asp-action="Edit" asp-controller="Accounts" asp-route-personCode="@Model.Code" class="btn btn-success">Add New Transaction</a>
                 </div>
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
                             <th>Code</th>
-                            <th>Account number</th>
-                            <th>Outstanding Balance</th>
-                            <th>Actions</th>
+                            <th>Account code</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>CaptureDate</th>
+                            <th>TransactionDate</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model != null && Model.Accounts.Any())
+                        @if (Model != null && Model.Transactions.Any())
                         {
-                            foreach (var account in Model.Accounts)
+                            foreach (var transaction in Model.Transactions)
                             {
                                 <tr>
-                                    <td>@account.Code</td>
-                                    <td>@account.AccountNumber</td>
-                                    <td>@account.OutStandingBalance</td>
+                                    <td>@transaction.Code</td>
+                                    <td>@transaction.AccountCode</td>
+                                    <td>@transaction.Amount</td>
+                                    <td>@transaction.Description</td>
+                                    <td>@transaction.CaptureDate</td>
+                                    <td>@transaction.TransactionDate</td>
                                     <td>
-                                        <a asp-action="Details" asp-controller="Accounts" asp-route-id="@account.Code" class="btn btn-sm btn-primary">Edit/View</a>
+                                        <a asp-action="Edit" asp-controller="Accounts" asp-route-id="@transaction.Code" class="btn btn-sm btn-primary">View</a>
                                     </td>
                                 </tr>
                             }
@@ -102,4 +102,3 @@
         </div>
     }
 </div>
-

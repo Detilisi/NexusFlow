@@ -46,8 +46,8 @@ public class PersonsController : Controller
         return RedirectToAction("Index");
     }
 
-    [HttpGet("Details")]
-    public IActionResult Details(int id = 0)
+    [HttpGet("Edit")]
+    public IActionResult Edit(int id = 0)
     {
         if (id == 0)
         {
@@ -56,17 +56,6 @@ public class PersonsController : Controller
 
         var person = _persons.FirstOrDefault(p => p.Code == id);
         return View(person);
-    }
-
-    [HttpGet("Save")]
-    public IActionResult Save(int? id)
-    {
-        if (id != null)
-        {
-            var person = _persons.FirstOrDefault(p => p.Code == id);
-            return View(person);
-        }
-        return View();
     }
 
     [HttpPost("SubmitSave")]
