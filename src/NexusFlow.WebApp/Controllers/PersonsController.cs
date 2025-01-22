@@ -47,7 +47,7 @@ public class PersonsController : Controller
     }
 
     [HttpGet("Details")]
-    public IActionResult Details(int id)
+    public IActionResult Details(int? id = 1)
     {
         var person = _persons.FirstOrDefault(p => p.Code == id);
         return View(person);
@@ -65,7 +65,7 @@ public class PersonsController : Controller
     }
 
     [HttpPost("SubmitSave")]
-    public IActionResult Save(PersonViewModel model)
+    public IActionResult SubmitSave(PersonViewModel model)
     {
         if(model.Code == 0)
         {

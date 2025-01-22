@@ -6,13 +6,13 @@ namespace NexusFlow.WebApp.Controllers
     [Route("Login/Persons/[controller]")]
     public class AccountsController : Controller
     {
-        private AccountViewModel _currentAccount = new() { AccountNumber = "Acc45454"};
+        private AccountViewModel _currentAccount = new() { PersonCode = 1, AccountNumber = "Acc45454"};
 
         
         [HttpGet("Delete")]
         public IActionResult Delete(int id)
         {
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Persons", new { id = _currentAccount.PersonCode });
         }
 
         [HttpGet("Details")]
@@ -26,10 +26,9 @@ namespace NexusFlow.WebApp.Controllers
         {
             if (id != null)
             {
-                return View();
             }
 
-            return View();
+            return View(_currentAccount);
         }
 
         [HttpPost("SubmitSave")]
@@ -45,7 +44,7 @@ namespace NexusFlow.WebApp.Controllers
                 //Update
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Persons", new{ id = account.PersonCode });
         }
     }
 }
