@@ -41,6 +41,18 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                        <th>Account Status</th>
+                        <td>
+                            <div class="form-group">
+                                <select asp-for="Status" class="form-control">
+                                    <option value="Open" selected>Open</option>
+                                    <option value="Closed">Closed</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
                 <div class="mt-2 text-end">
