@@ -38,6 +38,18 @@
                             </td>
                         </tr>
                         <tr>
+                            <th>Transaction type</th>
+                            <td>
+                                <div class="form-group">
+                                    <select asp-for="Type" class="form-control">
+                                        <option value="1" selected>Debit</option>
+                                        <option value="0">Credit</option>
+                                    </select>
+                                    <span asp-validation-for="Type" class="text-danger"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
                             <th>Description</th>
                             <td>
                                 <div class="form-group">
@@ -51,6 +63,7 @@
                             <td>
                                 <div class="form-group">
                                     <input asp-for="TransactionDate" class="form-control datetimepicker" />
+                                    <span asp-validation-for="TransactionDate" class="text-danger"></span>
                                 </div>
                             </td>
                         </tr>
