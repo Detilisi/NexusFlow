@@ -9,7 +9,7 @@ public class PersonsController : Controller
     private static List<PersonViewModel> _persons = new()
     {
         new PersonViewModel { Code = 1, IdNumber = "123456789", Name = "John", Surname = "Doe" },
-        new PersonViewModel { Code = 2, IdNumber = "987654321", Name = "Jane", Surname = "Smith" }
+        new PersonViewModel { Code = 2, IdNumber = "987654321", Name = "Jane", Surname = "Smith", Accounts = [new() { Code = 1, AccountNumber = "asdasd" }] }
     };
 
     [HttpGet]
@@ -46,27 +46,20 @@ public class PersonsController : Controller
         return RedirectToAction("Index");
     }
 
-    [HttpGet("Detials")]
-    public IActionResult Detials(int id)
+    [HttpGet("Edit")]
+    public IActionResult Edit(int id = 0)
     {
+        if (id == 0)
+        {
+            return View(new PersonViewModel());
+        }
+
         var person = _persons.FirstOrDefault(p => p.Code == id);
         return View(person);
     }
 
-    [HttpGet("Save")]
-    public IActionResult Save(int? id)
-    {
-        if (id != null)
-        {
-            var person = _persons.FirstOrDefault(p => p.Code == id);
-            return View(person);
-        }
-        return View();
-    }
-
-    // Handle Save Submission
-    [HttpPost("Save")]
-    public IActionResult Save(PersonViewModel model)
+    [HttpPost("SubmitSave")]
+    public IActionResult SubmitSave(PersonViewModel model)
     {
         if(model.Code == 0)
         {

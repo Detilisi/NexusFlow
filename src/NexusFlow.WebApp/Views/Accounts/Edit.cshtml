@@ -1,0 +1,104 @@
+﻿@model AccountViewModel
+@{
+    ViewData["Title"] = "Account Details";
+}
+
+<div class="container py-5">
+    <a asp-action="Edit" asp-controller="Persons" asp-route-id="@Model.PersonCode" class="btn btn-secondary mb-4">Back to List</a>
+
+    <!-- Basic Details -->
+    <div class="card">
+        <div class="card-header">
+            <h4 class="text-primary">Account Detials</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="SubmitSave">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>Code</th>
+                            <td>@Model.Code</td>
+                        </tr>
+                        <tr>
+                            <th>Person code</th>
+                            <td>@Model.PersonCode</td>
+                        </tr>
+                        <tr>
+                            <th>Account number</th>
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="AccountNumber" class="form-control" />
+                                    <span asp-validation-for="AccountNumber" class="text-danger"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Outstanding Balance</th>
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="OutStandingBalance" class="form-control" />
+                                    <span asp-validation-for="OutStandingBalance" class="text-danger"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="mt-2 text-end">
+                    <button type="submit" class="btn btn-success"> Save Updates </button>
+                </div>
+            </form>
+        </div>
+    </div>  
+    
+    @if (Model.Code != 0)
+    {
+        <!-- Transaction -->
+        <div class="card mt-5">
+            <div class="card-header">
+                <h4 class="text-primary">Transaction list</h4>
+            </div>
+            <div class="card-body">
+                <div class="text-end mb-3">
+                    <a asp-action="Edit" asp-controller="Accounts" asp-route-personCode="@Model.Code" class="btn btn-success">Add New Transaction</a>
+                </div>
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Account code</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>CaptureDate</th>
+                            <th>TransactionDate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Transactions.Any())
+                        {
+                            foreach (var transaction in Model.Transactions)
+                            {
+                                <tr>
+                                    <td>@transaction.Code</td>
+                                    <td>@transaction.AccountCode</td>
+                                    <td>@transaction.Amount</td>
+                                    <td>@transaction.Description</td>
+                                    <td>@transaction.CaptureDate</td>
+                                    <td>@transaction.TransactionDate</td>
+                                    <td>
+                                        <a asp-action="Edit" asp-controller="Accounts" asp-route-id="@transaction.Code" class="btn btn-sm btn-primary">View</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">No accounts found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

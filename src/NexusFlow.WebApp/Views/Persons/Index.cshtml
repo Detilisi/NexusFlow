@@ -29,15 +29,13 @@
                 </div>
             </form>
         </div>
-
-        
     </div>
 
     <div class="card shadow-sm">
         <div class="card-body">
             <!-- Add New Person Button -->
             <div class="mb-3">
-                <a asp-action="Save" class="btn btn-success">Add New Person</a>
+                <a asp-action="Edit" class="btn btn-success">Add New Person</a>
             </div>
             <!-- Persons Table -->
             <table class="table table-bordered table-striped table-hover">
@@ -61,9 +59,8 @@
                                 <td>@person.Surname</td>
                                 <td>@person.IdNumber</td>
                                 <td>
-                                    <a asp-action="Save" asp-route-id="@person.Code" class="btn btn-sm btn-warning">Edit</a>
                                     <a asp-action="Delete" asp-route-id="@person.Code" class="btn btn-sm btn-danger">Delete</a>
-                                    <a asp-action="Detials" asp-route-id="@person.Code" class="btn btn-sm btn-primary">View</a>
+                                    <a asp-action="Edit" asp-route-id="@person.Code" class="btn btn-sm btn-primary">Edit/View</a>
                                 </td>
                             </tr>
                         }
