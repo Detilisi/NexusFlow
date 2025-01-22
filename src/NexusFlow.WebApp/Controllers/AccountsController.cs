@@ -1,13 +1,51 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NexusFlow.WebApp.Models;
 
 namespace NexusFlow.WebApp.Controllers
 {
     [Route("Login/Persons/[controller]")]
     public class AccountsController : Controller
     {
-        public IActionResult Index()
+        private AccountViewModel _currentAccount = new() { AccountNumber = "Acc45454"};
+
+        
+        [HttpGet("Delete")]
+        public IActionResult Delete(int id)
         {
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet("Details")]
+        public IActionResult Details(int? id)
+        {
+            return View(_currentAccount);
+        }
+
+        [HttpGet("Save")]
+        public IActionResult Save(int? id)
+        {
+            if (id != null)
+            {
+                return View();
+            }
+
             return View();
+        }
+
+        [HttpPost("SubmitSave")]
+        public IActionResult SubmitSave(AccountViewModel account)
+        {
+            if (account.Code == 0)
+            {
+                //Add
+                
+            }
+            else
+            {
+                //Update
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

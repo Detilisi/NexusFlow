@@ -40,7 +40,7 @@
     <div class="card-body mt-3">
         <!-- Add New Account Button -->
         <div class="text-end mb-3">
-            <a asp-action="Index" asp-controller="Accounts" class="btn btn-success">Add New Account</a>
+            <a asp-action="Save" asp-controller="Accounts" class="btn btn-success">Add New Account</a>
         </div>
         
         <table class="table table-bordered table-striped table-hover">
@@ -62,9 +62,9 @@
                             <td>@account.AccountNumber</td>
                             <td>@account.OutStandingBalance</td>
                             <td>
-                                <a asp-action="Save" asp-route-id="@account.Code" class="btn btn-sm btn-warning">Edit</a>
-                                <a asp-action="Delete" asp-route-id="@account.Code" class="btn btn-sm btn-danger">Delete</a>
-                                <a asp-action="Detials" asp-route-id="@account.Code" class="btn btn-sm btn-primary">View</a>
+                                <a asp-action="Save" asp-controller="Accounts" asp-route-id="@account.Code" class="btn btn-sm btn-warning">Edit</a>
+                                <a asp-action="Delete" asp-controller="Accounts" asp-route-id="@account.Code" class="btn btn-sm btn-danger">Delete</a>
+                                <a asp-action="Details" asp-controller="Accounts" asp-route-id="@account.Code" class="btn btn-sm btn-primary">View</a>
                             </td>
                         </tr>
                     }
