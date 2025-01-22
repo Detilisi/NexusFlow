@@ -24,20 +24,15 @@
                             <td>@Model.PersonCode</td>
                         </tr>
                         <tr>
+                            <th>Outstanding Balance</th>
+                            <td>@Model.OutStandingBalance</td>
+                        </tr>
+                        <tr>
                             <th>Account number</th>
                             <td>
                                 <div class="form-group">
                                     <input asp-for="AccountNumber" class="form-control" />
                                     <span asp-validation-for="AccountNumber" class="text-danger"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Outstanding Balance</th>
-                            <td>
-                                <div class="form-group">
-                                    <input asp-for="OutStandingBalance" class="form-control" />
-                                    <span asp-validation-for="OutStandingBalance" class="text-danger"></span>
                                 </div>
                             </td>
                         </tr>
@@ -79,6 +74,7 @@
                             <th>Code</th>
                             <th>Account code</th>
                             <th>Amount</th>
+                            <th>Transaction type</th>
                             <th>Description</th>
                             <th>CaptureDate</th>
                             <th>TransactionDate</th>
@@ -93,6 +89,7 @@
                                     <td>@transaction.Code</td>
                                     <td>@transaction.AccountCode</td>
                                     <td>@transaction.Amount</td>
+                                    <td>@transaction.Type</td>
                                     <td>@transaction.Description</td>
                                     <td>@transaction.CaptureDate</td>
                                     <td>@transaction.TransactionDate</td>
