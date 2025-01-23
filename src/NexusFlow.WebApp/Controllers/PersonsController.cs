@@ -7,24 +7,32 @@ namespace NexusFlow.WebApp.Controllers;
 public class PersonsController : Controller
 {
     private readonly HttpClient _httpClient;
+    private List<PersonViewModel> _persons = new();
     public PersonsController(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }
 
-
-    private static List<PersonViewModel> _persons = new()
-    {
-        new PersonViewModel { Code = 1, IdNumber = "123456789", Name = "John", Surname = "Doe" },
-        new PersonViewModel { Code = 2, IdNumber = "987654321", Name = "Jane", Surname = "Smith", Accounts = [new() { Code = 1, AccountNumber = "asdasd" }] }
-    };
-
     [HttpGet]
     public async Task<IActionResult> Index(string searchTerm, string searchType)
     {
-        var response = await _httpClient.GetAsync("https://localhost:7253/api/Persons/GetAll");
-        var jsonData = await response.Content.ReadAsStringAsync();
-        var persons = System.Text.Json.JsonSerializer.Deserialize<List<PersonModel>>(jsonData);
+        var apiUrl = "https://localhost:7253/api/Persons/GetAll";
+        try
+        {
+            var response = await _httpClient.GetAsync(apiUrl);
+            if (!response.IsSuccessStatusCode)
+            {
+                return View("Error", $"Failed to fetch data from API: {response.ReasonPhrase}");
+            }
+
+            var jsonData = await response.Content.ReadAsStringAsync();
+            _persons = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonData) ?? [];
+        }
+        catch (Exception ex)
+        {
+            return View("Error", $"An error occurred while calling the API: {ex.Message}");
+        }
+
 
         var filteredPersons = FilterBySearch(searchTerm, searchType, _persons);
         return View(filteredPersons);
@@ -97,9 +105,11 @@ public class PersonsController : Controller
     }
 }
 
-public class PersonModel
+public class Person
 {
-    public int Code { get; set; }
-    public string Name { get; set; }
+    public int Code { get; set; } = 0;
+    public string IdNumber { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Surname { get; set; } = string.Empty;
 }
 

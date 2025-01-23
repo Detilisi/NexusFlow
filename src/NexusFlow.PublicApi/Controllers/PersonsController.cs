@@ -9,8 +9,8 @@ namespace NexusFlow.PublicApi.Controllers
     {
         private List<Person> _persons = new List<Person>
         {
-            new Person { Code = 1, Name = "John Doe" },
-            new Person { Code = 2, Name = "Jane Doe" }
+            new Person { Code = 1, Name = "John", Surname = "Doe", IdNumber ="hello world" },
+            new Person { Code = 2, Name = "Jane", Surname = "Doe", IdNumber ="hello world" }
         };
 
         [HttpGet]
