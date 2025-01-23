@@ -23,13 +23,13 @@ namespace NexusFlow.PublicApi.Controllers
         }
 
         // GET: api/Accounts/{id}
-        [HttpGet("{id}")]
-        public IActionResult GetAccountById(int id)
+        [HttpGet("{code}")]
+        public IActionResult Get(int code)
         {
-            var account = _accounts.FirstOrDefault(a => a.Code == id);
+            var account = _accounts.FirstOrDefault(a => a.Code == code);
             if (account == null)
             {
-                return NotFound($"Account with Code {id} not found.");
+                return NotFound($"Account with Code {code} not found.");
             }
             return Ok(account);
         }
@@ -72,7 +72,7 @@ namespace NexusFlow.PublicApi.Controllers
             newAccount.Code = _accounts.Max(a => a.Code) + 1; // Auto-increment Code
             _accounts.Add(newAccount);
 
-            return CreatedAtAction(nameof(GetAccountById), new { id = newAccount.Code }, newAccount);
+            return CreatedAtAction(nameof(Get), new { code = newAccount.Code }, newAccount);
         }
 
         // PUT: api/Accounts/{id}
