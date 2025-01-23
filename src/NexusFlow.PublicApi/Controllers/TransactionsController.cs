@@ -16,9 +16,9 @@ namespace NexusFlow.PublicApi.Controllers
                 AccountCode = 1,
                 Amount = 500.00m,
                 Description = "Initial Deposit",
-                CaptureDate = DateTime.Now,
-                TransactionDate = DateTime.Now,
-                Type = TransactionType.Credit
+                //CaptureDate = DateTime.Now,
+                //TransactionDate = DateTime.Now,
+                //Type = TransactionType.Credit
             },
             new Transaction
             {
@@ -26,9 +26,9 @@ namespace NexusFlow.PublicApi.Controllers
                 AccountCode = 2,
                 Amount = 200.00m,
                 Description = "Bill Payment",
-                CaptureDate = DateTime.Now,
-                TransactionDate = DateTime.Now,
-                Type = TransactionType.Debit
+                //CaptureDate = DateTime.Now,
+                //TransactionDate = DateTime.Now,
+                //Type = TransactionType.Debit
             }
         };
 
@@ -49,7 +49,7 @@ namespace NexusFlow.PublicApi.Controllers
         }
 
         [HttpGet("{accountCode}/{transactionCode=-1}")]
-        public IActionResult GetByAccount(int accountCode, int transactionCode = -1)
+        public IActionResult Get(int accountCode, int transactionCode = -1)
         {
             IEnumerable<Transaction> result;
 
@@ -68,7 +68,7 @@ namespace NexusFlow.PublicApi.Controllers
                 return NotFound("No transactions found");
             }
 
-            return Ok(accountCode == -1 ? result : result.First());
+            return Ok(result);
         }
 
         [HttpPost]

@@ -26,8 +26,7 @@ namespace NexusFlow.WebApp.Controllers
                 // Create a new account
                 account = new AccountViewModel
                 {
-                    PersonCode = personCode,
-                    Transactions = new List<TransactionViewModel>() // Assuming this exists in AccountViewModel
+                    PersonCode = personCode
                 };
             }
             else
@@ -41,6 +40,12 @@ namespace NexusFlow.WebApp.Controllers
 
                 var jsonData = await response.Content.ReadAsStringAsync();
                 account = JsonConvert.DeserializeObject<AccountViewModel>(jsonData) ?? new AccountViewModel();
+                if (account == null)
+                {
+                    return View("Error", $"Failed to deserialize account data from API: {response.ReasonPhrase}");
+                }
+
+                await PopulateWithTransactions(account);
             }
 
             return View(account);
@@ -91,6 +96,18 @@ namespace NexusFlow.WebApp.Controllers
             }
 
             return RedirectToAction("Edit", "Persons", new { id = personCode });
+        }
+
+        // Utility function
+        private async Task PopulateWithTransactions(AccountViewModel account)
+        {
+            var transactionsApiUrl = _apiBaseUrl.Replace("Accounts", "Transactions");
+            var response = await _httpClient.GetAsync($"{transactionsApiUrl}/{account.Code}/-1");
+            if (!response.IsSuccessStatusCode) return;
+
+            var jsonData = await response.Content.ReadAsStringAsync();
+            var transactions = Newtonsoft.Json.JsonConvert.DeserializeObject<List<TransactionViewModel>>(jsonData) ?? new List<TransactionViewModel>();
+            account.Transactions = transactions;
         }
     }
 }

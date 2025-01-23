@@ -56,7 +56,7 @@ namespace NexusFlow.PublicApi.Controllers
                 return NotFound($"No accounts found for AccountCode {accountCode} and PersonCode {personCode}.");
             }
 
-            return Ok(accountCode == -1 ? result : result.First());
+            return Ok(result);
         }
 
 
