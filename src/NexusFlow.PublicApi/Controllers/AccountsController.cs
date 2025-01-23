@@ -34,6 +34,32 @@ namespace NexusFlow.PublicApi.Controllers
             return Ok(account);
         }
 
+        // GET: api/Accounts/{accountCode}/{personCode?}
+        [HttpGet("{personCode}/{accountCode=-1}")]
+        public IActionResult Get(int personCode, int accountCode = -1)
+        {
+            IEnumerable<Account> result;
+
+            if (accountCode == -1)
+            {
+                // Fetch all accounts for the given personCode
+                result = _accounts.Where(a => a.PersonCode == personCode);
+            }
+            else
+            {
+                // Fetch a specific account by accountCode and personCode
+                result = _accounts.Where(a => a.Code == accountCode && a.PersonCode == personCode);
+            }
+
+            if (!result.Any())
+            {
+                return NotFound($"No accounts found for AccountCode {accountCode} and PersonCode {personCode}.");
+            }
+
+            return Ok(accountCode == -1 ? result : result.First());
+        }
+
+
         // POST: api/Accounts
         [HttpPost]
         public IActionResult CreateAccount([FromBody] Account newAccount)

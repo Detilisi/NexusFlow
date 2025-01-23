@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NexusFlow.WebApp.Models;
 
 namespace NexusFlow.WebApp.Controllers;
@@ -7,7 +8,7 @@ namespace NexusFlow.WebApp.Controllers;
 public class PersonsController : Controller
 {
     private readonly HttpClient _httpClient;
-    private const string ApiBaseUrl = "https://localhost:7253/api/Persons";
+    private readonly string _apiBaseUrl = "https://localhost:7253/api/Persons";
 
     public PersonsController(HttpClient httpClient)
     {
@@ -21,7 +22,7 @@ public class PersonsController : Controller
 
         try
         {
-            var response = await _httpClient.GetAsync(ApiBaseUrl);
+            var response = await _httpClient.GetAsync(_apiBaseUrl);
             if (!response.IsSuccessStatusCode)
             {
                 return View("Error", $"Failed to fetch data from API: {response.ReasonPhrase}");
@@ -29,6 +30,8 @@ public class PersonsController : Controller
 
             var jsonData = await response.Content.ReadAsStringAsync();
             persons = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonData) ?? new List<PersonViewModel>();
+
+            await PopulateWithAccounts(persons);
         }
         catch (Exception ex)
         {
@@ -44,7 +47,7 @@ public class PersonsController : Controller
     {
         try
         {
-            var response = await _httpClient.DeleteAsync($"{ApiBaseUrl}/{id}");
+            var response = await _httpClient.DeleteAsync($"{_apiBaseUrl}/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 return View("Error", $"Failed to delete person: {response.ReasonPhrase}");
@@ -69,7 +72,7 @@ public class PersonsController : Controller
 
         try
         {
-            var response = await _httpClient.GetAsync($"{ApiBaseUrl}/{id}");
+            var response = await _httpClient.GetAsync($"{_apiBaseUrl}/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 return View("Error", $"Failed to fetch person details: {response.ReasonPhrase}");
@@ -100,12 +103,12 @@ public class PersonsController : Controller
             if (model.Code == 0)
             {
                 // Add new person
-                response = await _httpClient.PostAsJsonAsync(ApiBaseUrl, model);
+                response = await _httpClient.PostAsJsonAsync(_apiBaseUrl, model);
             }
             else
             {
                 // Update existing person
-                response = await _httpClient.PutAsJsonAsync($"{ApiBaseUrl}/{model.Code}", model);
+                response = await _httpClient.PutAsJsonAsync($"{_apiBaseUrl}/{model.Code}", model);
             }
 
             if (!response.IsSuccessStatusCode)
@@ -122,6 +125,23 @@ public class PersonsController : Controller
     }
 
     // Utility function
+    private async Task PopulateWithAccounts(List<PersonViewModel> personsList)
+    {
+
+        foreach (var person in personsList)
+        {
+            var accountUrl = _apiBaseUrl.Replace("Persons", "Accounts");
+            var response = await _httpClient.GetAsync($"{accountUrl}/{person.Code}/-1");
+            if (!response.IsSuccessStatusCode)
+            {
+                continue;
+            }
+            var jsonData = await response.Content.ReadAsStringAsync();
+            var accounts = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AccountViewModel>>(jsonData) ?? new List<AccountViewModel>();
+            person.Accounts = accounts;
+        }
+    }
+
     private List<PersonViewModel> FilterBySearch(string searchTerm, string searchType, List<PersonViewModel> personsList)
     {
         var persons = personsList.AsQueryable();
@@ -134,6 +154,9 @@ public class PersonsController : Controller
                     break;
                 case "Surname":
                     persons = persons.Where(p => p.Surname.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+                    break;
+                case "Account Number":
+                    persons = persons.Where(p => p.Accounts.FirstOrDefault(a => a.AccountNumber.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) != null);
                     break;
             }
         }
