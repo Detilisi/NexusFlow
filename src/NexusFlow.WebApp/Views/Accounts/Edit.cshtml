@@ -69,8 +69,6 @@
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>Code</th>
-                            <th>Account code</th>
                             <th>Amount</th>
                             <th>Transaction type</th>
                             <th>Description</th>
@@ -84,8 +82,6 @@
                             foreach (var transaction in Model.Transactions)
                             {
                                 <tr>
-                                    <td>@transaction.Code</td>
-                                    <td>@transaction.AccountCode</td>
                                     <td>@transaction.Amount</td>
                                     <td>@transaction.Type</td>
                                     <td>@transaction.Description</td>

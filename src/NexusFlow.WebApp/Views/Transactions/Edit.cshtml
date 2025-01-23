@@ -17,16 +17,10 @@
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
-                            <th>Code</th>
-                            <td>@Model.Code</td>
+                            <input type="hidden" asp-for="Code" />
                         </tr>
                         <tr>
-                            <th>Account Code</th>
-                            <td>@Model.AccountCode</td>
-                        </tr>
-                        <tr>
-                            <th>Capture Date</th>
-                            <td>@Model.CaptureDate</td>
+                            <input type="hidden" asp-for="AccountCode" />
                         </tr>
                         <tr>
                             <th>Amount</th>
@@ -42,7 +36,7 @@
                             <td>
                                 <div class="form-group">
                                     <select asp-for="Type" class="form-control">
-                                        <option value="1" selected>Debit</option>
+                                        <option value="1">Debit</option>
                                         <option value="0">Credit</option>
                                     </select>
                                     <span asp-validation-for="Type" class="text-danger"></span>
@@ -66,6 +60,10 @@
                                     <span asp-validation-for="TransactionDate" class="text-danger"></span>
                                 </div>
                             </td>
+                        </tr>
+                        <tr>
+                            <th>Capture Date</th>
+                            <td>@Model.CaptureDate</td>
                         </tr>
                     </tbody>
                 </table>
