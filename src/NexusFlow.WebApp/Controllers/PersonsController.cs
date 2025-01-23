@@ -6,6 +6,13 @@ namespace NexusFlow.WebApp.Controllers;
 [Route("Login/[controller]")]
 public class PersonsController : Controller
 {
+    private readonly HttpClient _httpClient;
+    public PersonsController(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
+
+
     private static List<PersonViewModel> _persons = new()
     {
         new PersonViewModel { Code = 1, IdNumber = "123456789", Name = "John", Surname = "Doe" },
@@ -13,26 +20,14 @@ public class PersonsController : Controller
     };
 
     [HttpGet]
-    public IActionResult Index(string searchTerm, string searchType)
+    public async Task<IActionResult> Index(string searchTerm, string searchType)
     {
-        var persons = _persons.AsQueryable();
-        if (!string.IsNullOrEmpty(searchTerm) && !string.IsNullOrEmpty(searchType))
-        {
-            switch (searchType)
-            {
-                case "ID Number":
-                    persons = persons.Where(p => p.IdNumber.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
-                    break;
-                case "Surname":
-                    persons = persons.Where(p => p.Surname.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
-                    break;
-                case "Account Number":
-                    persons = persons.Where(p => p.Accounts.FirstOrDefault(a => a.AccountNumber.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) != null);
-                    break;
-            }
-        }
+        var response = await _httpClient.GetAsync("https://localhost:7253/api/Persons/GetAll");
+        var jsonData = await response.Content.ReadAsStringAsync();
+        var persons = System.Text.Json.JsonSerializer.Deserialize<List<PersonModel>>(jsonData);
 
-        return View(persons.ToList());
+        var filteredPersons = FilterBySearch(searchTerm, searchType, _persons);
+        return View(filteredPersons);
     }
 
     //CRUD
@@ -77,4 +72,34 @@ public class PersonsController : Controller
 
         return RedirectToAction("Index");
     }
+
+    //Utility function
+    private List<PersonViewModel> FilterBySearch(string searchTerm, string searchType, List<PersonViewModel> personsList)
+    {
+        var persons = personsList.AsQueryable();
+        if (!string.IsNullOrEmpty(searchTerm) && !string.IsNullOrEmpty(searchType))
+        {
+            switch (searchType)
+            {
+                case "ID Number":
+                    persons = persons.Where(p => p.IdNumber.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+                    break;
+                case "Surname":
+                    persons = persons.Where(p => p.Surname.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+                    break;
+                case "Account Number":
+                    persons = persons.Where(p => p.Accounts.FirstOrDefault(a => a.AccountNumber.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) != null);
+                    break;
+            }
+        }
+
+        return persons.ToList();
+    }
 }
+
+public class PersonModel
+{
+    public int Code { get; set; }
+    public string Name { get; set; }
+}
+

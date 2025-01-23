@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{18A4FE47-4EEE-42E1-B776-35A44905A675}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexusFlow.WebApp", "src\NexusFlow.WebApp\NexusFlow.WebApp.csproj", "{DBD28193-AD3C-4B02-B23D-AFF0F1337157}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexusFlow.PublicApi", "src\NexusFlow.PublicApi\NexusFlow.PublicApi.csproj", "{B106AC7D-3E76-4236-9ED5-B0D8F4D9BEA9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,11 +19,16 @@ Global
 		{DBD28193-AD3C-4B02-B23D-AFF0F1337157}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBD28193-AD3C-4B02-B23D-AFF0F1337157}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBD28193-AD3C-4B02-B23D-AFF0F1337157}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B106AC7D-3E76-4236-9ED5-B0D8F4D9BEA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B106AC7D-3E76-4236-9ED5-B0D8F4D9BEA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B106AC7D-3E76-4236-9ED5-B0D8F4D9BEA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B106AC7D-3E76-4236-9ED5-B0D8F4D9BEA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{DBD28193-AD3C-4B02-B23D-AFF0F1337157} = {18A4FE47-4EEE-42E1-B776-35A44905A675}
+		{B106AC7D-3E76-4236-9ED5-B0D8F4D9BEA9} = {18A4FE47-4EEE-42E1-B776-35A44905A675}
 	EndGlobalSection
 EndGlobal
