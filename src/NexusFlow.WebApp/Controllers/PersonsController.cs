@@ -31,7 +31,7 @@ public class PersonsController : Controller
             var jsonData = await response.Content.ReadAsStringAsync();
             persons = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonData) ?? new List<PersonViewModel>();
 
-            await PopulateWithAccounts(persons);
+            await PopulateListWithAccounts(persons);
         }
         catch (Exception ex)
         {
@@ -80,6 +80,12 @@ public class PersonsController : Controller
 
             var jsonData = await response.Content.ReadAsStringAsync();
             var person = Newtonsoft.Json.JsonConvert.DeserializeObject<PersonViewModel>(jsonData);
+            if (person == null)
+            {
+                return View("Error", $"Person with ID {id} not found.");
+            } 
+            
+            await PopulateWithAccounts(person);
             return View(person);
         }
         catch (Exception ex)
@@ -125,20 +131,23 @@ public class PersonsController : Controller
     }
 
     // Utility function
-    private async Task PopulateWithAccounts(List<PersonViewModel> personsList)
+    private async Task PopulateWithAccounts(PersonViewModel person)
+    {
+        var accountUrl = _apiBaseUrl.Replace("Persons", "Accounts");
+        var response = await _httpClient.GetAsync($"{accountUrl}/{person.Code}/-1");
+        if (!response.IsSuccessStatusCode) return;
+        
+        var jsonData = await response.Content.ReadAsStringAsync();
+        var accounts = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AccountViewModel>>(jsonData) ?? new List<AccountViewModel>();
+        person.Accounts = accounts;
+    }
+
+    private async Task PopulateListWithAccounts(List<PersonViewModel> personsList)
     {
 
         foreach (var person in personsList)
         {
-            var accountUrl = _apiBaseUrl.Replace("Persons", "Accounts");
-            var response = await _httpClient.GetAsync($"{accountUrl}/{person.Code}/-1");
-            if (!response.IsSuccessStatusCode)
-            {
-                continue;
-            }
-            var jsonData = await response.Content.ReadAsStringAsync();
-            var accounts = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AccountViewModel>>(jsonData) ?? new List<AccountViewModel>();
-            person.Accounts = accounts;
+            await PopulateWithAccounts(person);
         }
     }
 
