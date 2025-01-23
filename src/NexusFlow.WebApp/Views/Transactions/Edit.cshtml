@@ -1,0 +1,78 @@
+﻿@model TransactionViewModel
+
+@{
+    ViewData["Title"] = "Transaction Details";
+}
+
+<div class="container py-5">
+    <a asp-action="Edit" asp-controller="Accounts" asp-route-id="@Model.AccountCode" class="btn btn-secondary mb-4">Back to List</a>
+
+    <!-- Transaction Details Form -->
+    <div class="card">
+        <div class="card-header">
+            <h4 class="text-primary">Transaction Details</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="SubmitSave">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>Code</th>
+                            <td>@Model.Code</td>
+                        </tr>
+                        <tr>
+                            <th>Account Code</th>
+                            <td>@Model.AccountCode</td>
+                        </tr>
+                        <tr>
+                            <th>Capture Date</th>
+                            <td>@Model.CaptureDate</td>
+                        </tr>
+                        <tr>
+                            <th>Amount</th>
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="Amount" class="form-control" />
+                                    <span asp-validation-for="Amount" class="text-danger"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Transaction type</th>
+                            <td>
+                                <div class="form-group">
+                                    <select asp-for="Type" class="form-control">
+                                        <option value="1" selected>Debit</option>
+                                        <option value="0">Credit</option>
+                                    </select>
+                                    <span asp-validation-for="Type" class="text-danger"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Description</th>
+                            <td>
+                                <div class="form-group">
+                                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Transaction Date</th>
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="TransactionDate" class="form-control datetimepicker" />
+                                    <span asp-validation-for="TransactionDate" class="text-danger"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="mt-2 text-end">
+                    <button type="submit" class="btn btn-success"> Save Transaction </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

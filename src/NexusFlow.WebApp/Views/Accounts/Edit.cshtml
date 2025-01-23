@@ -24,6 +24,10 @@
                             <td>@Model.PersonCode</td>
                         </tr>
                         <tr>
+                            <th>Outstanding Balance</th>
+                            <td>@Model.OutStandingBalance</td>
+                        </tr>
+                        <tr>
                             <th>Account number</th>
                             <td>
                                 <div class="form-group">
@@ -33,14 +37,17 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Outstanding Balance</th>
-                            <td>
-                                <div class="form-group">
-                                    <input asp-for="OutStandingBalance" class="form-control" />
-                                    <span asp-validation-for="OutStandingBalance" class="text-danger"></span>
-                                </div>
-                            </td>
-                        </tr>
+                        <th>Account Status</th>
+                        <td>
+                            <div class="form-group">
+                                <select asp-for="Status" class="form-control">
+                                    <option value="Open" selected>Open</option>
+                                    <option value="Closed">Closed</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
                 <div class="mt-2 text-end">
@@ -59,7 +66,7 @@
             </div>
             <div class="card-body">
                 <div class="text-end mb-3">
-                    <a asp-action="Edit" asp-controller="Accounts" asp-route-personCode="@Model.Code" class="btn btn-success">Add New Transaction</a>
+                    <a asp-action="Edit" asp-controller="Transactions" asp-route-personCode="@Model.Code" class="btn btn-success">Add New Transaction</a>
                 </div>
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
@@ -67,6 +74,7 @@
                             <th>Code</th>
                             <th>Account code</th>
                             <th>Amount</th>
+                            <th>Transaction type</th>
                             <th>Description</th>
                             <th>CaptureDate</th>
                             <th>TransactionDate</th>
@@ -81,11 +89,12 @@
                                     <td>@transaction.Code</td>
                                     <td>@transaction.AccountCode</td>
                                     <td>@transaction.Amount</td>
+                                    <td>@transaction.Type</td>
                                     <td>@transaction.Description</td>
                                     <td>@transaction.CaptureDate</td>
                                     <td>@transaction.TransactionDate</td>
                                     <td>
-                                        <a asp-action="Edit" asp-controller="Accounts" asp-route-id="@transaction.Code" class="btn btn-sm btn-primary">View</a>
+                                        <a asp-action="Edit" asp-controller="Transactions" asp-route-id="@transaction.Code" class="btn btn-sm btn-primary">Edit/View</a>
                                     </td>
                                 </tr>
                             }
