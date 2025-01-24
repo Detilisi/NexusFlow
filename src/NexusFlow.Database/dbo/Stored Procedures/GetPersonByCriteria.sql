@@ -1,7 +1,7 @@
 ﻿CREATE PROCEDURE GetPersonByCriteria
-    @IDNumber NVARCHAR(20) = NULL,
-    @Surname NVARCHAR(50) = NULL,
-    @AccountNumber NVARCHAR(20) = NULL
+    @id_number NVARCHAR(20) = NULL,
+    @surname NVARCHAR(50) = NULL,
+    @account_number NVARCHAR(20) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -11,7 +11,7 @@ BEGIN
     FROM Persons p
     LEFT JOIN Accounts a ON p.Code = a.person_code
     WHERE 
-        (@IDNumber IS NULL OR p.Id_Number = @IDNumber) AND
-        (@Surname IS NULL OR p.Surname = @Surname) AND
-        (@AccountNumber IS NULL OR a.Account_Number = @AccountNumber);
+        (@id_number IS NULL OR p.Id_Number = @id_number) AND
+        (@surname IS NULL OR p.Surname = @surname) AND
+        (@account_number IS NULL OR a.Account_Number = @account_number);
 END;
