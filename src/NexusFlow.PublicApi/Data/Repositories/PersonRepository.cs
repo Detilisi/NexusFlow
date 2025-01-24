@@ -48,15 +48,25 @@ public class PersonRepository
         return result;
     }
 
-    public async Task<Person> GetPersonByIDAsync(string idNumber)
+    public async Task<Person?> GetPersonByCriteriaAsync(string? idNumber = null, string? surname = null, string? accountNumber = null)
     {
         using var connection = _dataAccess.GetDbConnection();
         var parameters = new DynamicParameters();
-        parameters.Add("@IDNumber", idNumber, DbType.String);
 
-        var result = await connection.QueryFirstOrDefaultAsync<Person>("GetPersonByID", parameters, commandType: CommandType.StoredProcedure);
+        // Add parameters if they are provided
+        parameters.Add("@IDNumber", idNumber, DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("@Surname", surname, DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("@AccountNumber", accountNumber, DbType.String, direction: ParameterDirection.Input);
+
+        // Query the stored procedure
+        var result = await connection.QueryFirstOrDefaultAsync<Person>(
+            "GetPersonByCriteria",
+            parameters,
+            commandType: CommandType.StoredProcedure);
+
         return result;
     }
+
 
     public async Task<IEnumerable<Person>> GetAllPersonsAsync()
     {
