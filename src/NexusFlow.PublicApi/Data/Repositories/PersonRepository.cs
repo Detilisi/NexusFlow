@@ -4,11 +4,11 @@ using System.Data;
 
 namespace NexusFlow.PublicApi.Data.Repositories;
 
-public class PersonsRepository
+public class PersonRepository
 {
     private readonly DataAccess _dataAccess;
 
-    public PersonsRepository()
+    public PersonRepository()
     {
         _dataAccess = new DataAccess();
     }
