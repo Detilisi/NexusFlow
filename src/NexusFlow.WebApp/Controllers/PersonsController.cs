@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NexusFlow.WebApp.Models;
 
 namespace NexusFlow.WebApp.Controllers;
@@ -6,16 +7,153 @@ namespace NexusFlow.WebApp.Controllers;
 [Route("Login/[controller]")]
 public class PersonsController : Controller
 {
-    private static List<PersonViewModel> _persons = new()
+    private readonly HttpClient _httpClient;
+    private readonly string _apiBaseUrl = "https://localhost:7253/api/Persons";
+
+    public PersonsController(HttpClient httpClient)
     {
-        new PersonViewModel { Code = 1, IdNumber = "123456789", Name = "John", Surname = "Doe" },
-        new PersonViewModel { Code = 2, IdNumber = "987654321", Name = "Jane", Surname = "Smith", Accounts = [new() { Code = 1, AccountNumber = "asdasd" }] }
-    };
+        _httpClient = httpClient;
+    }
 
     [HttpGet]
-    public IActionResult Index(string searchTerm, string searchType)
+    public async Task<IActionResult> Index(string searchTerm, string searchType)
     {
-        var persons = _persons.AsQueryable();
+        List<PersonViewModel> persons = new();
+
+        try
+        {
+            var response = await _httpClient.GetAsync(_apiBaseUrl);
+            if (!response.IsSuccessStatusCode)
+            {
+                return View("Error", $"Failed to fetch data from API: {response.ReasonPhrase}");
+            }
+
+            var jsonData = await response.Content.ReadAsStringAsync();
+            persons = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonData) ?? new List<PersonViewModel>();
+
+            await PopulateListWithAccounts(persons);
+        }
+        catch (Exception ex)
+        {
+            return View("Error", $"An error occurred while calling the API: {ex.Message}");
+        }
+
+        var filteredPersons = FilterBySearch(searchTerm, searchType, persons);
+        return View(filteredPersons);
+    }
+
+    [HttpGet("Delete/{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            var response = await _httpClient.DeleteAsync($"{_apiBaseUrl}/{id}");
+            if (!response.IsSuccessStatusCode)
+            {
+                return View("Error", $"Failed to delete person: {response.ReasonPhrase}");
+            }
+        }
+        catch (Exception ex)
+        {
+            return View("Error", $"An error occurred while deleting the person: {ex.Message}");
+        }
+
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet("Edit/{id?}")]
+    public async Task<IActionResult> Edit(int? id)
+    {
+        if (!id.HasValue || id == 0)
+        {
+            // Create new person
+            return View(new PersonViewModel());
+        }
+
+        try
+        {
+            var response = await _httpClient.GetAsync($"{_apiBaseUrl}/{id}");
+            if (!response.IsSuccessStatusCode)
+            {
+                return View("Error", $"Failed to fetch person details: {response.ReasonPhrase}");
+            }
+
+            var jsonData = await response.Content.ReadAsStringAsync();
+            var person = Newtonsoft.Json.JsonConvert.DeserializeObject<PersonViewModel>(jsonData);
+            if (person == null)
+            {
+                return View("Error", $"Person with ID {id} not found.");
+            } 
+            
+            await PopulateWithAccounts(person);
+            return View(person);
+        }
+        catch (Exception ex)
+        {
+            return View("Error", $"An error occurred while fetching person details: {ex.Message}");
+        }
+    }
+
+    [HttpPost("SubmitSave")]
+    public async Task<IActionResult> SubmitSave(PersonViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View("Edit", model);
+        }
+
+        try
+        {
+            HttpResponseMessage response;
+
+            if (model.Code == 0)
+            {
+                // Add new person
+                response = await _httpClient.PostAsJsonAsync(_apiBaseUrl, model);
+            }
+            else
+            {
+                // Update existing person
+                response = await _httpClient.PutAsJsonAsync($"{_apiBaseUrl}/{model.Code}", model);
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return View("Error", $"Failed to save person: {response.ReasonPhrase}");
+            }
+        }
+        catch (Exception ex)
+        {
+            return View("Error", $"An error occurred while saving the person: {ex.Message}");
+        }
+
+        return RedirectToAction("Index");
+    }
+
+    // Utility function
+    private async Task PopulateWithAccounts(PersonViewModel person)
+    {
+        var accountUrl = _apiBaseUrl.Replace("Persons", "Accounts");
+        var response = await _httpClient.GetAsync($"{accountUrl}/{person.Code}/-1");
+        if (!response.IsSuccessStatusCode) return;
+        
+        var jsonData = await response.Content.ReadAsStringAsync();
+        var accounts = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AccountViewModel>>(jsonData) ?? new List<AccountViewModel>();
+        person.Accounts = accounts;
+    }
+
+    private async Task PopulateListWithAccounts(List<PersonViewModel> personsList)
+    {
+
+        foreach (var person in personsList)
+        {
+            await PopulateWithAccounts(person);
+        }
+    }
+
+    private List<PersonViewModel> FilterBySearch(string searchTerm, string searchType, List<PersonViewModel> personsList)
+    {
+        var persons = personsList.AsQueryable();
         if (!string.IsNullOrEmpty(searchTerm) && !string.IsNullOrEmpty(searchType))
         {
             switch (searchType)
@@ -32,49 +170,7 @@ public class PersonsController : Controller
             }
         }
 
-        return View(persons.ToList());
-    }
-
-    //CRUD
-    [HttpGet("Delete")]
-    public IActionResult Delete(int id)
-    {
-        var person = _persons.FirstOrDefault(p => p.Code == id);
-        if (person == null) return NotFound();
-        _persons.Remove(person);
-
-        return RedirectToAction("Index");
-    }
-
-    [HttpGet("Edit")]
-    public IActionResult Edit(int id = 0)
-    {
-        if (id == 0)
-        {
-            return View(new PersonViewModel());
-        }
-
-        var person = _persons.FirstOrDefault(p => p.Code == id);
-        return View(person);
-    }
-
-    [HttpPost("SubmitSave")]
-    public IActionResult SubmitSave(PersonViewModel model)
-    {
-        if(model.Code == 0)
-        {
-            //Add
-            _persons.Add(model);
-        }
-        else
-        {
-            //Update
-            var person = _persons.FirstOrDefault(p => p.Code == model.Code);
-            person.IdNumber = model.IdNumber;
-            person.Name = model.Name;
-            person.Surname = model.Surname;
-        }
-
-        return RedirectToAction("Index");
+        return persons.ToList();
     }
 }
+

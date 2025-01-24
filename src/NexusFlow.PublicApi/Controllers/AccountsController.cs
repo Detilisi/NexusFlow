@@ -1,0 +1,116 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NexusFlow.PublicApi.Models;
+
+namespace NexusFlow.PublicApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AccountsController : ControllerBase
+    {
+        // Simulated in-memory data store
+        private static List<Account> _accounts = new List<Account>
+        {
+            new Account { Code = 1, PersonCode = 1, AccountNumber = "AC12345", OutStandingBalance = 100.50m, Status = AccountStatus.Open },
+            new Account { Code = 2, PersonCode = 2, AccountNumber = "AC54321", OutStandingBalance = 250.75m, Status = AccountStatus.Open }
+        };
+
+        // GET: api/Accounts
+        [HttpGet]
+        public IActionResult GetAllAccounts()
+        {
+            return Ok(_accounts);
+        }
+
+        // GET: api/Accounts/{id}
+        [HttpGet("{code}")]
+        public IActionResult Get(int code)
+        {
+            var account = _accounts.FirstOrDefault(a => a.Code == code);
+            if (account == null)
+            {
+                return NotFound($"Account with Code {code} not found.");
+            }
+            return Ok(account);
+        }
+
+        // GET: api/Accounts/{accountCode}/{personCode?}
+        [HttpGet("{personCode}/{accountCode=-1}")]
+        public IActionResult Get(int personCode, int accountCode = -1)
+        {
+            IEnumerable<Account> result;
+
+            if (accountCode == -1)
+            {
+                // Fetch all accounts for the given personCode
+                result = _accounts.Where(a => a.PersonCode == personCode);
+            }
+            else
+            {
+                // Fetch a specific account by accountCode and personCode
+                result = _accounts.Where(a => a.Code == accountCode && a.PersonCode == personCode);
+            }
+
+            if (!result.Any())
+            {
+                return NotFound($"No accounts found for AccountCode {accountCode} and PersonCode {personCode}.");
+            }
+
+            return Ok(result);
+        }
+
+
+        // POST: api/Accounts
+        [HttpPost]
+        public IActionResult CreateAccount([FromBody] Account newAccount)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            newAccount.Code = _accounts.Max(a => a.Code) + 1; // Auto-increment Code
+            _accounts.Add(newAccount);
+
+            return CreatedAtAction(nameof(Get), new { code = newAccount.Code }, newAccount);
+        }
+
+        // PUT: api/Accounts/{id}
+        [HttpPut("{id}")]
+        public IActionResult UpdateAccount(int id, [FromBody] Account updatedAccount)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var account = _accounts.FirstOrDefault(a => a.Code == id);
+            if (account == null)
+            {
+                return NotFound($"Account with Code {id} not found.");
+            }
+
+            account.PersonCode = updatedAccount.PersonCode;
+            account.AccountNumber = updatedAccount.AccountNumber;
+            account.OutStandingBalance = updatedAccount.OutStandingBalance;
+            account.Status = updatedAccount.Status;
+
+            return NoContent();
+        }
+
+        // DELETE: api/Accounts/{id}
+        [HttpDelete("{id}")]
+        public IActionResult DeleteAccount(int id)
+        {
+            var account = _accounts.FirstOrDefault(a => a.Code == id);
+            if (account == null)
+            {
+                return NotFound($"Account with Code {id} not found.");
+            }
+
+            _accounts.Remove(account);
+            return NoContent();
+        }
+    }
+}
+

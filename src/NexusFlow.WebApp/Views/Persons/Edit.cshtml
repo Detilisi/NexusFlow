@@ -16,8 +16,7 @@
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
-                            <th>Code</th>
-                            <td>@Model.Code</td>
+                            <input type="hidden" asp-for="Code" />
                         </tr>
                         <tr>
                             <th>Id number</th>
@@ -69,7 +68,6 @@
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>Code</th>
                             <th>Account number</th>
                             <th>Outstanding Balance</th>
                             <th>Actions</th>
@@ -81,7 +79,6 @@
                             foreach (var account in Model.Accounts)
                             {
                                 <tr>
-                                    <td>@account.Code</td>
                                     <td>@account.AccountNumber</td>
                                     <td>@account.OutStandingBalance</td>
                                     <td>
