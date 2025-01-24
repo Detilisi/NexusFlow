@@ -11,9 +11,9 @@ namespace NexusFlow.PublicApi.Controllers
     {
         private readonly PersonRepository _repository;
 
-        public PersonsController()
+        public PersonsController(PersonRepository personRepository)
         {
-            _repository = new PersonRepository();
+            _repository = personRepository;
         }
 
         [HttpGet]

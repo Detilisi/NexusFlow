@@ -8,9 +8,9 @@ public class PersonRepository
 {
     private readonly DataAccess _dataAccess;
 
-    public PersonRepository()
+    public PersonRepository(DataAccess dataAccess)
     {
-        _dataAccess = new DataAccess();
+        _dataAccess = dataAccess;
     }
 
     public async Task<int> CreatePersonAsync(Person person)

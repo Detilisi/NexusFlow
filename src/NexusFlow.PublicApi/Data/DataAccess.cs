@@ -5,12 +5,9 @@ namespace NexusFlow.PublicApi.Data;
 
 public class DataAccess
 {
-    private SqlConnection _connection;
+    private readonly string _connectionString;
 
-    public DataAccess()
-    {
-        _connection = new SqlConnection("Server=localhost;Database=NexusFlow;Trusted_Connection=True;");
-    }
+    public DataAccess(string connectionString) => _connectionString = connectionString;
 
-    public IDbConnection GetDbConnection() => _connection;
+    public IDbConnection GetDbConnection() => new SqlConnection(_connectionString);
 }
