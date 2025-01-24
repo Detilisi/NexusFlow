@@ -1,5 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using System.Data.SqlTypes;
+using System.Data;
 
 namespace NexusFlow.PublicApi.Data;
 
@@ -11,4 +11,6 @@ public class DataAccess
     {
         _connection = new SqlConnection("Server=localhost;Database=NexusFlow;Trusted_Connection=True;");
     }
+
+    public IDbConnection GetDbConnection() => _connection;
 }
