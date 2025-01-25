@@ -95,7 +95,6 @@ namespace NexusFlow.PublicApi.Controllers
             existingTransaction.Description = updatedTransaction.Description;
             existingTransaction.CaptureDate = updatedTransaction.CaptureDate;
             existingTransaction.TransactionDate = updatedTransaction.TransactionDate;
-            existingTransaction.Type = updatedTransaction.Type;
 
             return NoContent();
         }
