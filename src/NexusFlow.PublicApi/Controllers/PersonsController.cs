@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using NexusFlow.PublicApi.Data.Repositories;
 using NexusFlow.PublicApi.Models;
+using System;
 
 namespace NexusFlow.PublicApi.Controllers
 {
@@ -19,7 +20,14 @@ namespace NexusFlow.PublicApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var persons = await _repository.GetAllPersonsAsync();
+            var persons = await _repository.GetPersons();
+            return Ok(persons);
+        }
+
+        [HttpGet("{code=-1}")]
+        public async Task<IActionResult> Get(int code=-1)
+        {
+            var persons = await _repository.GetPersons(code);
             return Ok(persons);
         }
 
@@ -45,8 +53,8 @@ namespace NexusFlow.PublicApi.Controllers
 
             try
             {
-                await _repository.CreatePersonAsync(newPerson);
-                return CreatedAtAction(nameof(Get), new { idNumber = newPerson.IdNumber }, newPerson);
+                var result = await _repository.CreatePersonAsync(newPerson);
+                return Ok(result);
             }
             catch (SqlException ex) when (ex.Number == 2627) // Unique constraint violation
             {
@@ -63,7 +71,8 @@ namespace NexusFlow.PublicApi.Controllers
                 return BadRequest(new { Message = "Invalid person data provided." });
             }
 
-            var existingPerson = await _repository.GetPersonByCriteriaAsync(nameof(Person.Code), updatedPerson.Code.ToString());
+            var result = await _repository.GetPersons(code);
+            var existingPerson = result.FirstOrDefault();
             if (existingPerson == null || existingPerson.Code != code)
             {
                 return NotFound(new { Message = $"Person with code {code} not found." });
