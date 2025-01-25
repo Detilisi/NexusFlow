@@ -11,12 +11,5 @@ namespace NexusFlow.PublicApi.Models
         
         public DateTime CaptureDate { get; set; } = DateTime.Now;
         public DateTime TransactionDate { get; set; } = DateTime.Now;
-        public TransactionType Type { get; set; } = TransactionType.Debit;
-    }
-
-    public enum TransactionType
-    {
-        Credit = 1,
-        Debit = 0
     }
 }
