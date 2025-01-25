@@ -17,8 +17,8 @@ public class AccountRepository
     {
         using var connection = _dataAccess.GetDbConnection();
         var parameters = new DynamicParameters();
-        parameters.Add("@person_code", account.PersonCode, DbType.Int32);
-        parameters.Add("@account_number", account.AccountNumber, DbType.String);
+        parameters.Add($"@{nameof(Account.PersonCode)}", account.PersonCode, DbType.Int32);
+        parameters.Add($"@{nameof(Account.AccountNumber)}", account.AccountNumber, DbType.String);
 
         var result = await connection.ExecuteAsync("CreateAccount", parameters, commandType: CommandType.StoredProcedure);
 
@@ -29,8 +29,8 @@ public class AccountRepository
     {
         using var connection = _dataAccess.GetDbConnection();
         var parameters = new DynamicParameters();
-        parameters.Add("@account_code", account.Code, DbType.Int32);
-        parameters.Add("@new_account_number", account.AccountNumber, DbType.String);
+        parameters.Add($"@{nameof(Account.Code)}", account.Code, DbType.Int32);
+        parameters.Add($"@{nameof(Account.AccountNumber)}", account.AccountNumber, DbType.String);
 
         var result = await connection.ExecuteAsync(
             "UpdateAccountNumber",
@@ -39,12 +39,12 @@ public class AccountRepository
 
         return result;
     }
-    public async Task<int> CloseAccountAsync(int accountCode, AccountStatus accountStatus)
+    public async Task<int> UpdateAccountStatus(int accountCode, AccountStatus accountStatus)
     {
         using var connection = _dataAccess.GetDbConnection();
         var parameters = new DynamicParameters();
-        parameters.Add("@account_code", accountCode, DbType.Int32);
-        parameters.Add("@new_status_code", accountStatus, DbType.Int32);
+        parameters.Add($"@{nameof(Account.Code)}", accountCode, DbType.Int32);
+        parameters.Add($"@{nameof(Account.StatusCode)}", accountStatus, DbType.Int32);
 
         var result = await connection.ExecuteAsync(
             "UpdateAccountStatus",
@@ -54,29 +54,15 @@ public class AccountRepository
         return result;
     }
 
-    public async Task<Account?> GetAccountByCodeAsync(int accountCode)
+    public async Task<IEnumerable<Account>> GetAccounts(int personCode =-1, int accountCode=-1)
     {
         using var connection = _dataAccess.GetDbConnection();
         var parameters = new DynamicParameters();
-        parameters.Add("@account_code", accountCode, DbType.Int32);
-
-        var result = await connection.QueryFirstOrDefaultAsync<Account>(
-            "GetAccountByCode",
-            parameters,
-            commandType: CommandType.StoredProcedure);
-
-        return result;
-    }
-
-    public async Task<IEnumerable<Account>> GetAccountsForPersonAsync(int personCode, int? accountCode)
-    {
-        using var connection = _dataAccess.GetDbConnection();
-        var parameters = new DynamicParameters();
-        parameters.Add("@person_code", personCode, DbType.Int32);
-        parameters.Add("@account_code", accountCode, DbType.Int32);
+        parameters.Add($"@{nameof(Account.PersonCode)}", personCode, DbType.Int32);
+        parameters.Add($"@{nameof(Account.Code)}", accountCode, DbType.Int32);
 
         var result = await connection.QueryAsync<Account>(
-            "GetAccountsForPerson",
+            "GetAccounts",
             parameters,
             commandType: CommandType.StoredProcedure);
 
@@ -87,7 +73,7 @@ public class AccountRepository
     {
         using var connection = _dataAccess.GetDbConnection();
         var parameters = new DynamicParameters();
-        parameters.Add("@account_code", accountCode, DbType.Int32);
+        parameters.Add($"@{nameof(Account.Code)}", accountCode, DbType.Int32);
 
         var result = await connection.ExecuteAsync(
             "DeleteAccount",

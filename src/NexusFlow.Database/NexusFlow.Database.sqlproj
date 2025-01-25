@@ -72,9 +72,8 @@
     <Build Include="dbo\Stored Procedures\CreatePerson.sql" />
     <Build Include="dbo\Stored Procedures\UpdateAccountStatus.sql" />
     <Build Include="dbo\Stored Procedures\UpdateAccountNumber.sql" />
-    <Build Include="dbo\Stored Procedures\GetAccountsForPerson.sql" />
+    <Build Include="dbo\Stored Procedures\GetAccounts.sql" />
     <Build Include="dbo\Stored Procedures\DeleteAccount.sql" />
     <Build Include="dbo\Stored Procedures\CreateAccount.sql" />
-    <Build Include="dbo\Stored Procedures\GetPersonByCode.sql" />
   </ItemGroup>
 </Project>

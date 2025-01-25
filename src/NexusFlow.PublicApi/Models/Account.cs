@@ -5,9 +5,9 @@
         public int Code { get; set; } = 0;
         public int PersonCode { get; set; } = 0;
         public string AccountNumber { get; set; } = string.Empty;
-        public decimal OutStandingBalance { get; set; } = 00.00m;
+        public float OutStandingBalance { get; set; } = 0f;
 
-        public AccountStatus Status { get; set; } = AccountStatus.Open;
+        public AccountStatus StatusCode { get; set; } = AccountStatus.Closed;
     }
 
     public enum AccountStatus

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using NexusFlow.PublicApi.Data.Repositories;
 using NexusFlow.PublicApi.Models;
+using System.Security.Principal;
 
 namespace NexusFlow.PublicApi.Controllers
 {
@@ -9,19 +11,19 @@ namespace NexusFlow.PublicApi.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly AccountRepository _accountRepository;
+        private readonly AccountRepository _repository;
 
         public AccountsController(AccountRepository accountRepository)
         {
-            _accountRepository = accountRepository;
+            _repository = accountRepository;
         }
 
 
         // GET: api/Accounts/{personCode}/{accountCode?}
-        [HttpGet("{personCode}/{accountCode?}")]
-        public async Task<IActionResult> Get(int personCode, int? accountCode = null)
+        [HttpGet("{personCode=-1}/{accountCode=-1}")]
+        public async Task<IActionResult> Get(int personCode=-1, int accountCode = -1)
         {
-            var accounts = await _accountRepository.GetAccountsForPersonAsync(personCode, accountCode);
+            var accounts = await _repository.GetAccounts(personCode, accountCode);
             if (!accounts.Any())
             {
                 return NotFound($"No accounts found for PersonCode {personCode} and AccountCode {accountCode}.");
@@ -32,56 +34,60 @@ namespace NexusFlow.PublicApi.Controllers
 
         // POST: api/Accounts
         [HttpPost]
-        public async Task<IActionResult> CreateAccount([FromBody] Account newAccount)
+        public async Task<IActionResult> AddAccount([FromBody] Account newAccount)
         {
-            if (!ModelState.IsValid)
+            if (newAccount == null || string.IsNullOrWhiteSpace(newAccount.AccountNumber))
             {
-                return BadRequest(ModelState);
+                return BadRequest(new { Message = "Invalid account data provided." });
             }
 
-            var rowsAffected = await _accountRepository.CreateAccountAsync(newAccount);
-            if (rowsAffected > 0)
+            try
             {
-                return CreatedAtAction(nameof(Get), new { code = newAccount.Code }, newAccount);
+                var result = await _repository.CreateAccountAsync(newAccount);
+                return Ok(result);
             }
-
-            return BadRequest("Failed to create account.");
+            catch (SqlException ex)
+            {
+                return Conflict(new { Message = ex.Message });
+            }
         }
 
-        // PUT: api/Accounts/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAccount(int id, [FromBody] Account updatedAccount)
+        // PUT: api/Accounts/{code}
+        [HttpPut("{code}")]
+        public async Task<IActionResult> UpdateAccount(int code, [FromBody] Account updatedAccount)
         {
-            if (!ModelState.IsValid)
+            if (updatedAccount == null || string.IsNullOrWhiteSpace(updatedAccount.AccountNumber))
             {
-                return BadRequest(ModelState);
+                return BadRequest(new { Message = "Invalid account data provided." });
             }
 
-            if (id != updatedAccount.Code)
+            var result = await _repository.GetAccounts(-1, code);
+            var existingAccount = result.FirstOrDefault();
+            if (existingAccount == null || existingAccount.Code != code)
             {
-                return BadRequest("Account code mismatch.");
+                return NotFound(new { Message = $"Account with code {code} not found." });
             }
 
-            var rowsAffected = await _accountRepository.UpdateAccountDetailsAsync(updatedAccount);
-            if (rowsAffected > 0)
-            {
-                return NoContent();
-            }
+            updatedAccount.Code = code; // Ensure the code remains the same during the update
 
-            return NotFound($"Account with Code {id} not found.");
+            await _repository.UpdateAccountDetailsAsync(updatedAccount);
+            return Ok(updatedAccount);
         }
 
-        // DELETE: api/Accounts/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAccount(int id)
+        // DELETE: api/Accounts/{code}
+        [HttpDelete("{code}")]
+        public async Task<IActionResult> DeleteAccount(int code)
         {
-            var rowsAffected = await _accountRepository.DeleteAccountAsync(id);
-            if (rowsAffected > 0)
+            try
             {
-                return NoContent();
+                await _repository.DeleteAccountAsync(code);
+                return NoContent(); // 204 No Content
             }
-
-            return NotFound($"Account with Code {id} not found.");
+            catch (Exception ex) 
+            {
+                return Conflict(new { Message = ex.Message });
+            }
+           
         }
     }
 }
