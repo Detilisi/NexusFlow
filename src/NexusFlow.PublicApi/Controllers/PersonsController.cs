@@ -23,13 +23,13 @@ namespace NexusFlow.PublicApi.Controllers
             return Ok(persons);
         }
 
-        [HttpGet("{idNumber}/{surname}/{accountNumber}")]
-        public async Task<IActionResult> Get(string? idNumber = null, string? surname = null, string? accountNumber = null)
+        [HttpGet("{searchTerm}/{searchCiteria}")]
+        public async Task<IActionResult> Get(string searchTerm, string searchCiteria)
         {
-            var person = await _repository.GetPersonByCriteriaAsync(idNumber, surname, accountNumber);
+            var person = await _repository.GetPersonByCriteriaAsync(searchTerm, searchCiteria);
             if (person == null)
             {
-                return NotFound(new { Message = $"Person with ID Number {idNumber} not found." });
+                return NotFound(new { Message = $"Person with {searchCiteria} = {searchTerm} not found." });
             }
             return Ok(person);
         }
@@ -63,7 +63,7 @@ namespace NexusFlow.PublicApi.Controllers
                 return BadRequest(new { Message = "Invalid person data provided." });
             }
 
-            var existingPerson = await _repository.GetPersonByCriteriaAsync(updatedPerson.IdNumber);
+            var existingPerson = await _repository.GetPersonByCriteriaAsync(nameof(Person.Code), updatedPerson.Code.ToString());
             if (existingPerson == null || existingPerson.Code != code)
             {
                 return NotFound(new { Message = $"Person with code {code} not found." });

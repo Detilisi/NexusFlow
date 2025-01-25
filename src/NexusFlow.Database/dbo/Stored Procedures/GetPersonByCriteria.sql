@@ -1,17 +1,37 @@
 ﻿CREATE PROCEDURE GetPersonByCriteria
-    @id_number NVARCHAR(20) = NULL,
-    @surname NVARCHAR(50) = NULL,
-    @account_number NVARCHAR(20) = NULL
+    @SearchCriteria NVARCHAR(20), -- 'IdNumber', 'Surname', or 'AccountNumber'
+    @SearchTerm NVARCHAR(50) -- The value to search for
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- Retrieve the person based on the criteria
-    SELECT DISTINCT p.*
-    FROM Persons p
-    LEFT JOIN Accounts a ON p.Code = a.person_code
-    WHERE 
-        (@id_number IS NULL OR p.Id_Number = @id_number) AND
-        (@surname IS NULL OR p.Surname = @surname) AND
-        (@account_number IS NULL OR a.Account_Number = @account_number);
+    -- Validate the search criteria
+    IF @SearchCriteria NOT IN ('IdNumber', 'Surname', 'AccountNumber')
+    BEGIN
+        RAISERROR('Invalid search criteria. Must be IdNumber, Surname, or AccountNumber.', 16, 1);
+        RETURN;
+    END;
+
+    -- Dynamic SQL to handle the criteria
+    DECLARE @Sql NVARCHAR(MAX);
+
+    SET @Sql = 
+        CASE 
+            WHEN @SearchCriteria = 'IdNumber' THEN
+                'SELECT P.* 
+                 FROM Persons P
+                 WHERE P.id_number = @SearchTerm'
+            WHEN @SearchCriteria = 'Surname' THEN
+                'SELECT P.* 
+                 FROM Persons P
+                 WHERE P.surname = @SearchTerm'
+            WHEN @SearchCriteria = 'AccountNumber' THEN
+                'SELECT P.* 
+                 FROM Persons P
+                 INNER JOIN Accounts A ON P.code = A.person_code
+                 WHERE A.AccountNumber = @SearchTerm'
+        END;
+
+    -- Execute the constructed SQL
+    EXEC sp_executesql @Sql, N'@SearchTerm NVARCHAR(50)', @SearchTerm;
 END;
