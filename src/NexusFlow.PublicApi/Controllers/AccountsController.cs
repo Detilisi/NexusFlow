@@ -17,18 +17,6 @@ namespace NexusFlow.PublicApi.Controllers
         }
 
 
-        // GET: api/Accounts/{id}
-        [HttpGet("{code}")]
-        public async Task<IActionResult> Get(int code)
-        {
-            var account = await _accountRepository.GetAccountByCodeAsync(code);
-            if (account == null)
-            {
-                return NotFound($"Account with Code {code} not found.");
-            }
-            return Ok(account);
-        }
-
         // GET: api/Accounts/{personCode}/{accountCode?}
         [HttpGet("{personCode}/{accountCode?}")]
         public async Task<IActionResult> Get(int personCode, int? accountCode = null)
