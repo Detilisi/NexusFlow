@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using NexusFlow.PublicApi.Data.Repositories;
 using NexusFlow.PublicApi.Models;
+using System.Security.Principal;
 
 namespace NexusFlow.PublicApi.Controllers
 {
@@ -8,107 +11,61 @@ namespace NexusFlow.PublicApi.Controllers
     [ApiController]
     public class TransactionsController : ControllerBase
     {
-        private static List<Transaction> _transactions = new List<Transaction>
-        {
-            new Transaction
-            {
-                Code = 1,
-                AccountCode = 1,
-                Amount = 500.00m,
-                Description = "Initial Deposit",
-                //CaptureDate = DateTime.Now,
-                //TransactionDate = DateTime.Now,
-                //Type = TransactionType.Credit
-            },
-            new Transaction
-            {
-                Code = 2,
-                AccountCode = 2,
-                Amount = 200.00m,
-                Description = "Bill Payment",
-                //CaptureDate = DateTime.Now,
-                //TransactionDate = DateTime.Now,
-                //Type = TransactionType.Debit
-            }
-        };
+        private readonly TransactionsRepository _repository;
 
-        [HttpGet]
-        public IActionResult Get()
+        public TransactionsController(TransactionsRepository accountRepository)
         {
-            return Ok(_transactions);
+            _repository = accountRepository;
         }
 
-        [HttpGet("{code}")]
-        public IActionResult Get(int code)
+        // GET: api/Transactions/{personCode}/{accountCode?}
+        [HttpGet("{accountCode=-1}/{transactionCode=-1}")]
+        public async Task<IActionResult> Get(int accountCode = -1, int transactionCode = -1)
         {
-            var transaction = _transactions.FirstOrDefault(t => t.Code == code);
-            if (transaction == null)
-                return NotFound($"Transaction with Code {code} not found.");
+            var results = await _repository.GetTransactions(accountCode, transactionCode);
+            if (!results.Any())
+            {
+                return NotFound("No Transactions found.");
+            }
 
-            return Ok(transaction);
+            return Ok(results);
         }
 
-        [HttpGet("{accountCode}/{transactionCode=-1}")]
-        public IActionResult Get(int accountCode, int transactionCode = -1)
-        {
-            IEnumerable<Transaction> result;
-
-            if (transactionCode == -1)
-            {
-                result = _transactions.Where(a => a.AccountCode == accountCode);
-            }
-            else
-            {
-                // Fetch a specific account by accountCode and personCode
-                result = _transactions.Where(a => a.Code == transactionCode && a.AccountCode == accountCode);
-            }
-
-            if (!result.Any())
-            {
-                return NotFound("No transactions found");
-            }
-
-            return Ok(result);
-        }
-
+        
         [HttpPost]
-        public IActionResult Create([FromBody] Transaction newTransaction)
+        public async Task<IActionResult> Create([FromBody] Transaction newTransaction)
         {
-            if (newTransaction == null)
-                return BadRequest("Transaction data is null.");
+            if (newTransaction == null || string.IsNullOrWhiteSpace(newTransaction.Description))
+            {
+                return BadRequest(new { Message = "Invalid transaction data provided." });
+            }
 
-            newTransaction.Code = _transactions.Any() ? _transactions.Max(t => t.Code) + 1 : 1;
-            _transactions.Add(newTransaction);
-
-            return CreatedAtAction(nameof(Get), new { code = newTransaction.Code }, newTransaction);
+            try
+            {
+                var result = await _repository.CreateTransactionAsync(newTransaction);
+                return Ok(result);
+            }
+            catch (SqlException ex)
+            {
+                return Conflict(new { Message = ex.Message });
+            }
         }
 
         [HttpPut("{code}")]
-        public IActionResult Update(int code, [FromBody] Transaction updatedTransaction)
+        public async Task<IActionResult> Update(int code, [FromBody] Transaction updatedTransaction)
         {
-            var existingTransaction = _transactions.FirstOrDefault(t => t.Code == code);
-            if (existingTransaction == null)
+            var result = await _repository.GetTransactions(-1, code);
+            var existingTransaction = result.FirstOrDefault();
+            
+            if (existingTransaction == null || existingTransaction.Code != code)
+            {
                 return NotFound($"Transaction with Code {code} not found.");
+            }
 
-            existingTransaction.AccountCode = updatedTransaction.AccountCode;
-            existingTransaction.Amount = updatedTransaction.Amount;
-            existingTransaction.Description = updatedTransaction.Description;
-            existingTransaction.CaptureDate = updatedTransaction.CaptureDate;
-            existingTransaction.TransactionDate = updatedTransaction.TransactionDate;
-            existingTransaction.Type = updatedTransaction.Type;
+            updatedTransaction.Code = code;
 
-            return NoContent();
-        }
-
-        [HttpDelete("{code}")]
-        public IActionResult Delete(int code)
-        {
-            var transaction = _transactions.FirstOrDefault(t => t.Code == code);
-            if (transaction == null)
-                return NotFound($"Transaction with Code {code} not found.");
-
-            _transactions.Remove(transaction);
-            return NoContent();
+            await _repository.UpdateTransactionAsync(updatedTransaction);
+            return Ok(updatedTransaction);
         }
     }
 }
