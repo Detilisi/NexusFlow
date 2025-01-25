@@ -67,7 +67,7 @@ namespace NexusFlow.PublicApi.Controllers
                 return NotFound(new { Message = $"Account with code {code} not found." });
             }
 
-            updatedAccount.Code = code; // Ensure the code remains the same during the update
+            updatedAccount.Code = code;
 
             await _repository.UpdateAccountDetailsAsync(updatedAccount);
             return Ok(updatedAccount);

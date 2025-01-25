@@ -75,7 +75,6 @@
     <Build Include="dbo\Stored Procedures\GetAccounts.sql" />
     <Build Include="dbo\Stored Procedures\DeleteAccount.sql" />
     <Build Include="dbo\Stored Procedures\CreateAccount.sql" />
-    <Build Include="dbo\Tables\TransactionType.sql" />
     <Build Include="dbo\Stored Procedures\UpdateTransaction.sql" />
     <Build Include="dbo\Stored Procedures\GetTransactions.sql" />
     <Build Include="dbo\Stored Procedures\CreateTransaction.sql" />
