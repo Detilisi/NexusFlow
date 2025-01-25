@@ -9,6 +9,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddScoped<DataAccess>(sp => new DataAccess(connectionString));
 builder.Services.AddScoped<PersonRepository>();
 builder.Services.AddScoped<AccountRepository>();
+builder.Services.AddScoped<TransactionsRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
