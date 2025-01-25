@@ -54,19 +54,30 @@ public class AccountRepository
         return result;
     }
 
-    public async Task<IEnumerable<Account>> GetAccounts(int personCode =-1, int accountCode=-1)
+    public async Task<IEnumerable<Account>> GetAccounts(int personCode = -1, int accountCode = -1)
     {
         using var connection = _dataAccess.GetDbConnection();
         var parameters = new DynamicParameters();
-        parameters.Add($"@{nameof(Account.PersonCode)}", personCode, DbType.Int32);
-        parameters.Add($"@{nameof(Account.Code)}", accountCode, DbType.Int32);
+        parameters.Add("@PersonCode", personCode);
+        parameters.Add("@Code", accountCode);
 
-        var result = await connection.QueryAsync<Account>(
+
+        var result = await connection.QueryAsync(
             "GetAccounts",
             parameters,
-            commandType: CommandType.StoredProcedure);
+            commandType: CommandType.StoredProcedure
+        );
 
-        return result;
+        var accounts = result.Select(row => new Account
+        {
+            Code = row.code,
+            PersonCode = row.person_code,
+            AccountNumber = row.account_number,
+            OutstandingBalance = row.outstanding_balance,
+            StatusCode = row.status_code
+        });
+
+        return accounts;
     }
 
     public async Task<int> DeleteAccountAsync(int accountCode)
