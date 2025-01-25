@@ -18,7 +18,6 @@ namespace NexusFlow.PublicApi.Controllers
             _repository = accountRepository;
         }
 
-
         // GET: api/Accounts/{personCode}/{accountCode?}
         [HttpGet("{personCode=-1}/{accountCode=-1}")]
         public async Task<IActionResult> Get(int personCode=-1, int accountCode = -1)
@@ -72,6 +71,21 @@ namespace NexusFlow.PublicApi.Controllers
 
             await _repository.UpdateAccountDetailsAsync(updatedAccount);
             return Ok(updatedAccount);
+        }
+
+        // PUT: api/Accounts/{code}/{accountStatus}
+        [HttpPut("{code}/{accountStatus}")]
+        public async Task<IActionResult> UpdateAccountStatus(int code, AccountStatus accountStatus)
+        {
+            var result = await _repository.GetAccounts(-1, code);
+            var existingAccount = result.FirstOrDefault();
+            if (existingAccount == null || existingAccount.Code != code)
+            {
+                return NotFound(new { Message = $"Account with code {code} not found." });
+            }
+
+            var re = await _repository.UpdateAccountStatus(code, accountStatus);
+            return Ok(re);
         }
 
         // DELETE: api/Accounts/{code}

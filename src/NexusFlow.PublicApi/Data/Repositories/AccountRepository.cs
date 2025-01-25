@@ -44,7 +44,7 @@ public class AccountRepository
         using var connection = _dataAccess.GetDbConnection();
         var parameters = new DynamicParameters();
         parameters.Add($"@{nameof(Account.Code)}", accountCode, DbType.Int32);
-        parameters.Add($"@{nameof(Account.StatusCode)}", accountStatus, DbType.Int32);
+        parameters.Add($"@{nameof(Account.StatusCode)}", (int)accountStatus, DbType.Int32);
 
         var result = await connection.ExecuteAsync(
             "UpdateAccountStatus",

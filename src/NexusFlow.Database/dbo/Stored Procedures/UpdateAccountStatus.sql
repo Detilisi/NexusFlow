@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE UpdateAccountStatus
     @Code INT, 
-    @Status INT
+    @StatusCode INT
 AS
 BEGIN
     -- Check if the account exists
@@ -11,14 +11,14 @@ BEGIN
     END
 
     -- Check if the new status is valid
-    IF NOT EXISTS (SELECT 1 FROM Status WHERE code = @Status)
+    IF NOT EXISTS (SELECT 1 FROM Status WHERE code = @StatusCode)
     BEGIN
         RAISERROR('Invalid status code.', 16, 1);
         RETURN;
     END
 
     -- Prevent closing an account with a non-zero balance
-    IF @Status = 2 AND (SELECT outstanding_balance FROM Accounts WHERE code = @Code) <> 0
+    IF @StatusCode = 2 AND (SELECT outstanding_balance FROM Accounts WHERE code = @Code) <> 0
     BEGIN
         RAISERROR('Cannot close account with a non-zero balance.', 16, 1);
         RETURN;
@@ -26,7 +26,7 @@ BEGIN
 
     -- Update the account status
     UPDATE Accounts
-    SET status_code = @Status
+    SET status_code = @StatusCode
     WHERE code = @Code;
 
     -- Return success message
