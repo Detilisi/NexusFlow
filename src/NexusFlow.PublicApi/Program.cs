@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication;
+using NexusFlow.PublicApi.Auth;
 using NexusFlow.PublicApi.Data;
 using NexusFlow.PublicApi.Data.Repositories;
 
@@ -7,9 +9,14 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 // Add services to the container.
 builder.Services.AddScoped<DataAccess>(sp => new DataAccess(connectionString));
+builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<PersonRepository>();
 builder.Services.AddScoped<AccountRepository>();
 builder.Services.AddScoped<TransactionsRepository>();
+
+builder.Services.AddAuthentication("BasicAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
