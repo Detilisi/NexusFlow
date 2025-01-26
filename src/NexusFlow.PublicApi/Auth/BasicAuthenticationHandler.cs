@@ -25,7 +25,7 @@ namespace NexusFlow.PublicApi.Auth
         {
             _userRepo = dataAccess;
             _passwordHasher = new PasswordHasherService();
-         }
+        }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
@@ -43,18 +43,12 @@ namespace NexusFlow.PublicApi.Auth
                 var password = credentials[1];
 
                 // Validate user
-                var user = await _userRepo.LoginAsync(new User { Email = username, Password = password });
+                var user = await _userRepo.LoginAsync(new User { Email = username, PasswordHash = password });
                 if (user == null)
                 {
                     return AuthenticateResult.Fail("Invalid Username or Password");
                 }
                     
-                /*// Verify password
-                var hashedPassword = Convert.ToBase64String(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(password)));
-                bool isValid = _passwordHasher.VerifyPassword(hashedPassword, user.Password);
-                
-                if (!isValid) return AuthenticateResult.Fail("Invalid Username or Password");*/
-
                 // Create claims
                 var claims = new[] {
                     new Claim(ClaimTypes.Name, user.Email)
