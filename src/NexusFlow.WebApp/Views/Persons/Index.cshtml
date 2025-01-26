@@ -18,9 +18,9 @@
                     </div>
                     <div class="col-md-4">
                         <select name="searchType" class="form-control">
-                            <option value="ID Number" selected>By ID Number</option>
-                            <option value="Surname">By Surname</option>
-                            <option value="Account Number">By Account Number</option>
+                            <option value="@nameof(PersonViewModel.IdNumber)" selected>By ID Number</option>
+                            <option value="@nameof(PersonViewModel.Surname)">By Surname</option>
+                            <option value="@nameof(AccountViewModel.AccountNumber)">By Account Number</option>
                         </select>
                     </div>
                     <div class="col-md-2">

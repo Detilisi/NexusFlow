@@ -29,7 +29,7 @@ BEGIN
                 'SELECT P.* 
                  FROM Persons P
                  INNER JOIN Accounts A ON P.code = A.person_code
-                 WHERE A.AccountNumber = @SearchTerm'
+                 WHERE A.account_number = @SearchTerm'
         END;
 
     -- Execute the constructed SQL

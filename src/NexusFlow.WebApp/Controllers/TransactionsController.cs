@@ -11,10 +11,7 @@ namespace NexusFlow.WebApp.Controllers
         private readonly HttpClient _httpClient;
         private readonly string _apiBaseUrl = "https://localhost:7253/api/Transactions";
 
-        public TransactionsController(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        public TransactionsController(HttpClient httpClient) => _httpClient = httpClient;
 
         [HttpGet("Edit")]
         public async Task<IActionResult> Edit(int id = 0, int accountCode = 1)
@@ -37,7 +34,12 @@ namespace NexusFlow.WebApp.Controllers
             }
 
             var jsonData = await response.Content.ReadAsStringAsync();
-            var transaction = JsonConvert.DeserializeObject<TransactionViewModel>(jsonData);
+            var transactions = JsonConvert.DeserializeObject<List<TransactionViewModel>>(jsonData);
+            if (transactions == null)
+            {
+                return View("Error", $"Failed to deserialize transaction data from API: {response.ReasonPhrase}");
+            }
+            var transaction = transactions.FirstOrDefault();
             return View(transaction);
         }
 

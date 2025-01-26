@@ -27,8 +27,6 @@ public class PersonsController : Controller
 
             var jsonData = await response.Content.ReadAsStringAsync();
             persons = JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonData) ?? new List<PersonViewModel>();
-
-            await PopulateListWithAccounts(persons);
         }
         catch (Exception ex)
         {
@@ -76,13 +74,12 @@ public class PersonsController : Controller
             }
 
             var jsonData = await response.Content.ReadAsStringAsync();
-            var person = JsonConvert.DeserializeObject<PersonViewModel>(jsonData);
-            if (person == null)
-            {
-                return View("Error", $"Person with ID {id} not found.");
-            } 
+            var persons = JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonData);
+            if (persons == null) return View("Error", $"Person with ID {id} not found.");
             
+            var person = persons.FirstOrDefault();
             await PopulateWithAccounts(person);
+
             return View(person);
         }
         catch (Exception ex)
@@ -125,26 +122,6 @@ public class PersonsController : Controller
     }
 
     // Utility function
-    private async Task PopulateWithAccounts(PersonViewModel person)
-    {
-        var accountUrl = _apiBaseUrl.Replace("Persons", "Accounts");
-        var response = await _httpClient.GetAsync($"{accountUrl}/{person.Code}/-1");
-        if (!response.IsSuccessStatusCode) return;
-        
-        var jsonData = await response.Content.ReadAsStringAsync();
-        var accounts = JsonConvert.DeserializeObject<List<AccountViewModel>>(jsonData) ?? new List<AccountViewModel>();
-        person.Accounts = accounts;
-    }
-
-    private async Task PopulateListWithAccounts(List<PersonViewModel> personsList)
-    {
-
-        foreach (var person in personsList)
-        {
-            await PopulateWithAccounts(person);
-        }
-    }
-
     private async Task<List<PersonViewModel>> FilterBySearch(string searchTerm, string searchType, List<PersonViewModel> personsList)
     {
         if (string.IsNullOrEmpty(searchTerm) || string.IsNullOrEmpty(searchType)) return personsList;
@@ -157,6 +134,17 @@ public class PersonsController : Controller
         var persons = JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonData) ?? new List<PersonViewModel>();
 
         return persons.ToList();
+    }
+
+    private async Task PopulateWithAccounts(PersonViewModel person)
+    {
+        var accountUrl = _apiBaseUrl.Replace("Persons", "Accounts");
+        var response = await _httpClient.GetAsync($"{accountUrl}/{person.Code}/-1");
+        if (!response.IsSuccessStatusCode) return;
+
+        var jsonData = await response.Content.ReadAsStringAsync();
+        var accounts = JsonConvert.DeserializeObject<List<AccountViewModel>>(jsonData) ?? new List<AccountViewModel>();
+        person.Accounts = accounts;
     }
 }
 
