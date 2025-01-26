@@ -37,7 +37,6 @@ namespace NexusFlow.WebApp.Controllers
 
                 var jsonData = await response.Content.ReadAsStringAsync();
                 var accounts = JsonConvert.DeserializeObject<List<AccountViewModel>>(jsonData);
-                
                 if (accounts == null)
                 {
                     return View("Error", $"Failed to deserialize account data from API: {response.ReasonPhrase}");
@@ -105,7 +104,7 @@ namespace NexusFlow.WebApp.Controllers
             if (!response.IsSuccessStatusCode) return;
 
             var jsonData = await response.Content.ReadAsStringAsync();
-            var transactions = Newtonsoft.Json.JsonConvert.DeserializeObject<List<TransactionViewModel>>(jsonData) ?? new List<TransactionViewModel>();
+            var transactions = JsonConvert.DeserializeObject<List<TransactionViewModel>>(jsonData) ?? new List<TransactionViewModel>();
             account.Transactions = transactions;
         }
     }
