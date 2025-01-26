@@ -36,7 +36,8 @@ public class LoginController : Controller
         try
         {
             // Example: Test API call to validate login
-            var response = await _httpClient.GetAsync($"{_apiBaseUrl}/validate-user");
+            //var response = await _httpClient.GetAsync($"{_apiBaseUrl}/validate-user");
+            var response = await _httpClient.GetAsync("validate-user");
 
             if (response.IsSuccessStatusCode)
             {
@@ -58,12 +59,4 @@ public class LoginController : Controller
             return View("Index");
         }
     }
-
-    [HttpPost]
-    public ActionResult SubmitLogin1(string username, string password)
-    {
-        TempData["SuccessMessage"] = "Thank you for your message! We'll get back to you shortly.";
-        return RedirectToAction("Index", "Persons");
-    }
-
 }
