@@ -38,7 +38,7 @@ public class PersonsController : Controller
             return View("Error", $"An error occurred while calling the API: {ex.Message}");
         }
 
-        var filteredPersons = FilterBySearch(searchTerm, searchType, persons);
+        var filteredPersons = await FilterBySearch(searchTerm, searchType, persons);
         return View(filteredPersons);
     }
 
@@ -151,24 +151,16 @@ public class PersonsController : Controller
         }
     }
 
-    private List<PersonViewModel> FilterBySearch(string searchTerm, string searchType, List<PersonViewModel> personsList)
+    private async Task<List<PersonViewModel>> FilterBySearch(string searchTerm, string searchType, List<PersonViewModel> personsList)
     {
-        var persons = personsList.AsQueryable();
-        if (!string.IsNullOrEmpty(searchTerm) && !string.IsNullOrEmpty(searchType))
-        {
-            switch (searchType)
-            {
-                case "ID Number":
-                    persons = persons.Where(p => p.IdNumber.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
-                    break;
-                case "Surname":
-                    persons = persons.Where(p => p.Surname.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
-                    break;
-                case "Account Number":
-                    persons = persons.Where(p => p.Accounts.FirstOrDefault(a => a.AccountNumber.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) != null);
-                    break;
-            }
-        }
+        if (string.IsNullOrEmpty(searchTerm) || string.IsNullOrEmpty(searchType)) return personsList;
+
+        var searchUrl = $"{_apiBaseUrl}/{searchTerm}/{searchType}";
+        var response = await _httpClient.GetAsync(searchUrl);
+        if (!response.IsSuccessStatusCode) return personsList;
+
+        var jsonData = await response.Content.ReadAsStringAsync();
+        var persons = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonData) ?? new List<PersonViewModel>();
 
         return persons.ToList();
     }
