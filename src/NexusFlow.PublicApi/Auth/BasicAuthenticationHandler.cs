@@ -13,7 +13,6 @@ namespace NexusFlow.PublicApi.Auth
     public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         private readonly UserRepository _userRepo;
-        private readonly PasswordHasherService _passwordHasher;
         public BasicAuthenticationHandler
         (
             IOptionsMonitor<AuthenticationSchemeOptions> options,
@@ -24,7 +23,6 @@ namespace NexusFlow.PublicApi.Auth
         ) : base(options, logger, encoder, clock)
         {
             _userRepo = dataAccess;
-            _passwordHasher = new PasswordHasherService();
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
