@@ -6,7 +6,7 @@ namespace NexusFlow.WebApp.Controllers;
 public class LoginController : Controller
 {
     private readonly HttpClient _httpClient;
-    private readonly string _apiBaseUrl = "https://localhost:7253/api";
+    private readonly string _apiBaseUrl = "https://localhost:7253/api/Users";
 
     public LoginController(HttpClient httpClient)
     {
@@ -35,9 +35,7 @@ public class LoginController : Controller
 
         try
         {
-            // Example: Test API call to validate login
-            //var response = await _httpClient.GetAsync($"{_apiBaseUrl}/validate-user");
-            var response = await _httpClient.GetAsync("validate-user");
+            var response = await _httpClient.GetAsync($"{_apiBaseUrl}/validate-user");
 
             if (response.IsSuccessStatusCode)
             {
