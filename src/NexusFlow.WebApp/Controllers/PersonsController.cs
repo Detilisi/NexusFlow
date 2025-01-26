@@ -10,15 +10,12 @@ public class PersonsController : Controller
     private readonly HttpClient _httpClient;
     private readonly string _apiBaseUrl = "https://localhost:7253/api/Persons";
 
-    public PersonsController(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
+    public PersonsController(HttpClient httpClient) => _httpClient = httpClient;
 
     [HttpGet]
     public async Task<IActionResult> Index(string searchTerm, string searchType)
     {
-        List<PersonViewModel> persons = new();
+        var persons = new List<PersonViewModel>();
 
         try
         {
@@ -29,7 +26,7 @@ public class PersonsController : Controller
             }
 
             var jsonData = await response.Content.ReadAsStringAsync();
-            persons = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonData) ?? new List<PersonViewModel>();
+            persons = JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonData) ?? new List<PersonViewModel>();
 
             await PopulateListWithAccounts(persons);
         }
@@ -79,7 +76,7 @@ public class PersonsController : Controller
             }
 
             var jsonData = await response.Content.ReadAsStringAsync();
-            var person = Newtonsoft.Json.JsonConvert.DeserializeObject<PersonViewModel>(jsonData);
+            var person = JsonConvert.DeserializeObject<PersonViewModel>(jsonData);
             if (person == null)
             {
                 return View("Error", $"Person with ID {id} not found.");
@@ -138,7 +135,7 @@ public class PersonsController : Controller
         if (!response.IsSuccessStatusCode) return;
         
         var jsonData = await response.Content.ReadAsStringAsync();
-        var accounts = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AccountViewModel>>(jsonData) ?? new List<AccountViewModel>();
+        var accounts = JsonConvert.DeserializeObject<List<AccountViewModel>>(jsonData) ?? new List<AccountViewModel>();
         person.Accounts = accounts;
     }
 
@@ -160,7 +157,7 @@ public class PersonsController : Controller
         if (!response.IsSuccessStatusCode) return personsList;
 
         var jsonData = await response.Content.ReadAsStringAsync();
-        var persons = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonData) ?? new List<PersonViewModel>();
+        var persons = JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonData) ?? new List<PersonViewModel>();
 
         return persons.ToList();
     }
