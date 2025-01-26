@@ -94,10 +94,7 @@ public class PersonsController : Controller
     [HttpPost("SubmitSave")]
     public async Task<IActionResult> SubmitSave(PersonViewModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            return View("Edit", model);
-        }
+        if (!ModelState.IsValid) return View("Edit", model);
 
         try
         {
