@@ -11,10 +11,7 @@ namespace NexusFlow.WebApp.Controllers
         private readonly HttpClient _httpClient;
         private readonly string _apiBaseUrl = "https://localhost:7253/api/Accounts";
 
-        public AccountsController(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        public AccountsController(HttpClient httpClient) => _httpClient = httpClient;
 
         [HttpGet("Edit")]
         public async Task<IActionResult> Edit(int id = 0, int personCode = 1)
@@ -39,12 +36,14 @@ namespace NexusFlow.WebApp.Controllers
                 }
 
                 var jsonData = await response.Content.ReadAsStringAsync();
-                account = JsonConvert.DeserializeObject<AccountViewModel>(jsonData) ?? new AccountViewModel();
-                if (account == null)
+                var accounts = JsonConvert.DeserializeObject<List<AccountViewModel>>(jsonData);
+                
+                if (accounts == null)
                 {
                     return View("Error", $"Failed to deserialize account data from API: {response.ReasonPhrase}");
                 }
 
+                account = accounts.FirstOrDefault();
                 await PopulateWithTransactions(account);
             }
 
