@@ -59,7 +59,7 @@ public class PersonRepository
     }
 
 
-    public async Task<Person?> GetPersonByCriteriaAsync(string searchTerm, string searchCriteria)
+    public async Task<IEnumerable<Person>> GetPersonByCriteriaAsync(string searchTerm, string searchCriteria)
     {
         using var connection = _dataAccess.GetDbConnection();
         var parameters = new DynamicParameters();
@@ -69,7 +69,7 @@ public class PersonRepository
         parameters.Add("@SearchCriteria", searchCriteria, DbType.String, direction: ParameterDirection.Input);
 
         // Query the stored procedure
-        var result = await connection.QueryFirstOrDefaultAsync<Person>(
+        var result = await connection.QueryAsync<Person>(
             "GetPersonByCriteria",
             parameters,
             commandType: CommandType.StoredProcedure);
