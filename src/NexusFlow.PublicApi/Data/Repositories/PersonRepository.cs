@@ -54,8 +54,17 @@ public class PersonRepository
         var parameters = new DynamicParameters();
         parameters.Add("@Code", code, DbType.Int32, direction: ParameterDirection.Input);
 
-        var result = await connection.QueryAsync<Person>("GetPersons", parameters, commandType: CommandType.StoredProcedure);
-        return result;
+        var result = await connection.QueryAsync("GetPersons", parameters, commandType: CommandType.StoredProcedure);
+
+        var persons = result.Select(row => new Person
+        {
+            Code = row.code,
+            IdNumber = row.id_number,
+            Name = row.name,
+            Surname = row.surname
+        });
+
+        return persons;
     }
 
 
@@ -69,11 +78,19 @@ public class PersonRepository
         parameters.Add("@SearchCriteria", searchCriteria, DbType.String, direction: ParameterDirection.Input);
 
         // Query the stored procedure
-        var result = await connection.QueryAsync<Person>(
+        var result = await connection.QueryAsync(
             "GetPersonByCriteria",
             parameters,
             commandType: CommandType.StoredProcedure);
 
-        return result;
+        var persons = result.Select(row => new Person
+        {
+            Code = row.code,
+            IdNumber = row.id_number,
+            Name = row.name,
+            Surname = row.surname
+        });
+
+        return persons;
     }
 }
